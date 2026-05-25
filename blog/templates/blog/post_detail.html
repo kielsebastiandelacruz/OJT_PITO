@@ -1,0 +1,28 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    <article class="content-section">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image">
+        {% else %}
+            <!-- If there is no image, show nothing or just text -->
+            <p>No image provided for this post.</p>
+        {% endif %}
+
+        <h2 style="color: #2c3e50; margin-bottom: 5px;">{{ post.title }}</h2>
+        <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;">
+            By <strong>{{ post.author }}</strong> on {{ post.date_posted|date:"F d, Y" }}
+        </p>
+        
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+
+        <p style="line-height: 1.8; color: #333; white-space: pre-line;">{{ post.content }}</p>
+
+        {% if post.author == user %}
+            <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #eee;">
+                <a href="{% url 'post-update' post.pk %}" style="color: #3498db; text-decoration: none; font-weight: 600;">Edit Post</a>
+                <a href="{% url 'post-delete' post.pk %}" style="color: #e74c3c; text-decoration: none; font-weight: 600; margin-left: 20px;">Delete Post</a>
+            </div>
+        {% endif %}
+        
+    </article>
+{% endblock %}

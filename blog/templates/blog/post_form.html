@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    <div class="card" style="max-width: 700px; margin: 0 auto; padding: 40px;">
+        <h2 style="margin-bottom: 30px;">{% if object %}Edit your Blog{% else %}Create a new Blog{% endif %}</h2>
+        <hr style="margin-bottom: 30px; border: 0; border-top: 1px solid #eee;">
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <!-- BUTTON GROUP WITH FLEXBOX -->
+            <div style="margin-top: 40px; display: flex; gap: 15px;">
+                <button type="submit" class="btn-primary" style="flex: 2; padding: 15px">
+                    {% if object %}Update Post{% else %}Post to Blog{% endif %}
+                </button>
+
+                <!-- CANCEL / EXIT BUTTON -->
+                 <a href="{% url 'blog-home' %}" class="btn-secondary" style="flex: 1; padding: 15px; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;">
+                    Cancel
+                 </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

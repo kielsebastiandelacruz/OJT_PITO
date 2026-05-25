@@ -1,0 +1,70 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+
+    {% if not user.is_authenticated %}
+        <div class="card" style="text-align: center; padding: 60px 40px; margin-top: 20px;">
+            <h1 style="font-size: 2.5rem; color: #212529;">Welcome to My Django Blog</h1>
+            <p style="color: #6c757d; font-size: 1.1rem; margin-bottom: 40px;">
+                Join our community to share your stories and connect with others.
+            </p>
+            
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a href="{% url 'login' %}" class="btn-primary" style="width: 180px; text-decoration: none; text-align: center;">Login</a>
+                <a href="{% url 'register' %}" class="btn-secondary" style="width: 180px; text-decoration: none; text-align: center; padding: 12px; border: 1px solid #ccc; border-radius: 4px; color: #212529; font-weight: 600;">Register</a>
+            </div>
+        </div>
+
+    {% else %}
+        <form method="GET" action="{% url 'blog-home' %}" style="display: flex; gap: 10px; margin-bottom: 30px;">
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search posts..." 
+                style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px;">
+            <button type="submit" class="btn-primary" style="width: auto; padding: 0 25px;">Search</button>
+        </form>
+
+        <h1 class="mb-4">Blog Feed</h1>
+        
+        {% for post in posts %}
+            <article class="card">
+                <div class="article-body">
+                    <div class="article-metadata">
+                        <span class="mr-2">By <strong>{{ post.author }}</strong></span>
+                        <small class="text-muted">on {{ post.date_posted|date:"F d, Y" }}</small>
+                    </div>
+                    <h2>
+                        <a class="article-title" href="{% url 'post-detail' post.pk %}" style="text-decoration: none; color: #007bff;">{{ post.title }}</a>
+                    </h2>
+                    <p class="article-content">{{ post.content|truncatewords:30 }}</p>
+                </div>
+            </article>
+        {% empty %}
+            <div class="card" style="text-align: center; padding: 30px;">
+                <p>No posts yet. <a href="{% url 'post-create' %}">Be the first to create one!</a></p>
+            </div>
+        {% endfor %}
+
+        {% if is_paginated %}
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 5px;">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}" style="padding: 5px 10px; border: 1px solid #ccc; text-decoration: none; color: #2c3e50;">First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" style="padding: 5px 10px; border: 1px solid #ccc; text-decoration: none; color: #2c3e50;">Prev</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span style="padding: 5px 10px; background-color: #2c3e50; color: white; border: 1px solid #2c3e50;">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}" style="padding: 5px 10px; border: 1px solid #ccc; text-decoration: none; color: #2c3e50;">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" style="padding: 5px 10px; border: 1px solid #ccc; text-decoration: none; color: #2c3e50;">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}" style="padding: 5px 10px; border: 1px solid #ccc; text-decoration: none; color: #2c3e50;">Last</a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+    {% endif %}
+
+{% endblock %}

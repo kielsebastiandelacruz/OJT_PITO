@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>My Blog</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="nav-container">
+
+            <a href="{% url 'blog-home' %}" class="nav-logo">My Blog</a>
+
+           
+
+            <div class="nav-links">
+
+                <a href="{% url 'blog-home' %}">Home</a>
+
+               
+
+                {% if user.is_authenticated %}
+
+                    <!-- Added extra margin for cleaner nav spacing -->
+
+                    <a href="{% url 'post-create' %}" style="margin-right: 20px; font-weight: 600;">New Post</a>
+
+                   
+
+                    <span class="user-greeting">Hi, <strong>{{ user.username }}</strong>!</span>
+
+                    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+
+                        {% csrf_token %}
+
+                        <button type="submit" class="nav-logout-btn">Logout</button>
+
+                    </form>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}">Login</a>
+
+                    <a href="{% url 'register' %}">Register</a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- Increased top margin for better vertical spacing -->
+
+    <div class="main-wrapper" style="margin-top: 60px;">
+
+       
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="alert card">{{ message }}</div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+
+        <!-- CORRECTED: Spaces added around != operator -->
+
+        {% if request.path != '/' %}
+
+            <div style="margin-bottom: 30px;">
+
+                <a href="{% url 'blog-home' %}" style="text-decoration: none; color: #6c757d; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+
+                    &larr; Back
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+</body>
+
+</html>

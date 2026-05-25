@@ -1,0 +1,323 @@
+/* 1. GLOBAL STYLES */
+body {
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    color: #1c1e21;
+}
+
+/* 2. NAVIGATION BAR */
+.navbar {
+    background-color: #212529; /* Dark Navy/Black */
+    padding: 0.75rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    color: white !important;
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.nav-links a {
+    color: #ced4da;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: white;
+}
+
+.user-greeting {
+    color: #ffffff;
+    margin-right: 15px;
+    font-size: 0.95rem;
+}
+
+.nav-logout-btn {
+    background: transparent;
+    border: 1px solid #6c757d;
+    color: #ced4da;
+    padding: 6px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.nav-logout-btn:hover {
+    color: white;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* 3. MAIN CONTENT AREA (Single Column Layout) */
+.main-wrapper {
+    max-width: 800px; /* Limits width for readability */
+    margin: 60px auto; /* 60px gives the 'breathing room' from the navbar */
+    padding: 0 20px;
+}
+
+/* 4. THE CARD COMPONENT */
+.card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: 40px; /* This makes the card content feel premium and spaced out */
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* 5. BUTTONS */
+.btn-primary {
+    background-color: #212529;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background-color: #343a40;
+}
+
+.btn-secondary {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #212529;
+    transition: 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #f8f9fa;
+}
+
+/* 6. FORM & TYPING AREA (The 'Roomy' Fields) */
+form p {
+    margin-bottom: 25px; /* Adds space between Title, Email, and Content fields */
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+form input[type="text"], 
+form input[type="password"], 
+form input[type="email"], 
+form textarea {
+    width: 100%;
+    padding: 15px; /* Internal room for your text */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+form textarea {
+    min-height: 250px; /* Taller content area */
+    line-height: 1.6;
+    resize: vertical;
+}
+
+form input:focus, form textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* =========================================
+   7. ENHANCED AUTHENTICATION UI
+   ========================================= */
+
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 20px;
+}
+
+/* Enhancing your existing .card class for the login/register screen */
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: none;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #212529;
+    font-weight: 700;
+}
+
+.auth-header p {
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Official Google Material Design Button */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* This perfectly centers the logo and text */
+    gap: 16px; 
+    width: 100%;
+    background-color: #ffffff;
+    border: none; 
+    border-radius: 8px; 
+    
+    /* YOUR NEW TEXT STYLES */
+    color: #000000; /* Pure black text */
+    font-weight: 700; /* Bold text */
+    
+    padding: 12px 24px;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+    font-size: 1.1rem;
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px rgba(60,64,67,0.15); 
+    transition: background-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.btn-google:hover {
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 6px rgba(60,64,67,0.3), 0 4px 10px rgba(60,64,67,0.15); 
+}
+
+/* Clean Line Divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.auth-divider::before { margin-right: 15px; }
+.auth-divider::after { margin-left: 15px; }
+
+/* STYLING THE DJANGO USERNAME & PASSWORD FIELDS */
+.auth-form p {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 6px;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="password"],
+.auth-form input[type="email"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: #212529;
+    background-color: #f8f9fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.auth-form input:focus {
+    background-color: #ffffff;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
+    outline: none;
+}
+
+/* Hides the Django help text bullet points for a cleaner look */
+.auth-form ul.errorlist {
+    color: #dc3545;
+    padding-left: 0;
+    list-style: none;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.auth-form span.helptext {
+    display: none; 
+}
+
+/* Submit Button */
+.btn-full {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    font-size: 1.05rem;
+}
+
+/* Footer Links */
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.auth-footer p {
+    margin: 0;
+    color: #6c757d;
+}
+
+.auth-link {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
