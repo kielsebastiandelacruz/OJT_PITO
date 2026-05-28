@@ -321,3 +321,33 @@ form input:focus, form textarea:focus {
     text-decoration: underline;
     color: #0056b3;
 }
+
+/* =========================================
+   8. ENFORCED RESPONSIVE IMAGES (NO OVERLAP)
+   ========================================= */
+.content-section img, 
+.card img {
+    width: 100% !important;     /* Force the image to match the EXACT width of the card */
+    max-width: 100% !important; /* Absolute guard against breaking boundaries */
+    height: auto !important;    /* Proportional auto-scaling ensures NO cutting or distortion */
+    display: block !important;  /* Block formatting to clear alignment physics */
+    margin: 0 auto 20px !important; 
+    border-radius: 8px;
+}
+
+/* =========================================
+   9. PROFILE AVATAR FIX
+   ========================================= */
+/* This specific rule protects the avatar from being stretched by ANY global img rules */
+.card img.feed-avatar, 
+.content-section img.feed-avatar, 
+img.feed-avatar {
+    width: 45px !important;
+    height: 45px !important;
+    max-width: 45px !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+    margin: 0 12px 0 0 !important;
+    display: inline-block !important;
+    border: 2px solid #007bff !important;
+}

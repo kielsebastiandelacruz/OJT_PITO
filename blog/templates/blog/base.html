@@ -38,7 +38,10 @@
 
                    
 
-                    <span class="user-greeting">Hi, <strong>{{ user.username }}</strong>!</span>
+                    <a href="{% url 'profile-update' %}" style="margin-right: 15px; display: inline-flex; align-items: center; text-decoration: none;">
+                        <img src="{{ user.profile.image.url }}" alt="Nav Profile" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #1877F2; object-fit: cover; margin-right: 8px;">
+                        <span style="color: #fff;">Hi, <strong>{{ user.username }}</strong>!</span>
+                    </a>
 
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
 

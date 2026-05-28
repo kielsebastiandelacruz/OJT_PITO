@@ -3,9 +3,10 @@ from django.contrib import messages
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Post
-from .forms import UserRegisterForm
+from .models import Post, Profile
+from .forms import UserRegisterForm, ProfileUpdateForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
 # 1. Read, replace 'home'
 class PostListView(ListView):
@@ -91,3 +92,18 @@ def register(request):
 def about(request):
     return render(request, 'blog/about.html', {'title':'About'})
 
+@login_required
+def profile_update(request):
+    # This automatically fetches or builds a profile row if missing
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile picture has been updated!')
+            return redirect('blog-home')
+    else:
+        form = ProfileUpdateForm(instance=profile)
+
+    return render(request, 'blog/profile_update.html', {'form': form})

@@ -1,17 +1,30 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    <article class="content-section">
-        {% if post.image %}
-            <img src="{{ post.image.url }}" alt="Post Image">
+    <article class="content-section card" style="padding: 30px;">
+        
+        {% if post.image and post.image.name != "default.jpg" %}
+            <div style="width: 100%; display: flex; justify-content: center; margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px; padding: 10px;">
+                <img src="{{ post.image.url }}" alt="Post Image" style="max-width: 100%; height: auto; max-height: 600px; object-fit: contain; border-radius: 8px;">
+            </div>
         {% else %}
-            <!-- If there is no image, show nothing or just text -->
-            <p>No image provided for this post.</p>
+            <div style="width: 100%; max-width: 100%; box-sizing: border-box; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px auto; background-color: #f8f9fa; border-radius: 8px; padding: 20px; border: 1px dashed #ccc;">
+                <p style="color: #6c757d; font-style: italic; margin: 0; text-align: center;">This post has no image</p>
+            </div>
         {% endif %}
 
         <h2 style="color: #2c3e50; margin-bottom: 5px;">{{ post.title }}</h2>
-        <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px;">
-            By <strong>{{ post.author }}</strong> on {{ post.date_posted|date:"F d, Y" }}
-        </p>
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            {% if post.author.profile.image %}
+                <img src="{{ post.author.profile.image.url }}" alt="Profile Pic" class="feed-avatar">
+            {% else %}
+                <div style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid #1877F2; background-color: #e4e6eb; margin-right: 15px;"></div>
+            {% endif %}
+            
+            <div style="line-height: 1.2;">
+                <span style="font-weight: bold; color: #2c3e50; font-size: 1.2rem;">{{ post.author.username }}</span><br>
+                <span style="color: #7f8c8d; font-size: 0.9rem;">{{ post.date_posted|date:"F d, Y" }}</span>
+            </div>
+        </div>
         
         <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
 
@@ -24,5 +37,9 @@
             </div>
         {% endif %}
         
+        <div style="margin-top: 30px;">
+            <a href="#" onclick="history.back(); return false;" style="display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">← Back</a>
+        </div>
+
     </article>
 {% endblock %}

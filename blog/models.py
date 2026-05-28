@@ -26,3 +26,10 @@ class Post(models.Model):
 def delete_post_image(sender, instance, **kwargs):
     if instance.image and instance.image.name != 'default.jpg':
         instance.image.delete(save=False)
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'

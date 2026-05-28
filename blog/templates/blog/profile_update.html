@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    <div class="card" style="max-width: 500px; margin: 0 auto; padding: 40px; text-align: center;">
+        <h2 style="margin-bottom: 20px;">Update Profile Picture</h2>
+        
+        <div style="margin-bottom: 30px;">
+            <img src="{{ user.profile.image.url }}" 
+                alt="Current Profile" 
+                style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #1877F2; object-fit: cover;">
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px; text-align: left;">
+                {{ form.as_p }}
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <button type="submit" class="btn-primary" style="flex: 2; padding: 12px;">Save Photo</button>
+                <a href="{% url 'blog-home' %}" class="btn-secondary" style="flex: 1; padding: 12px; text-decoration: none; text-align: center; border: 1px solid #ccc; border-radius: 4px; color: #212529;">Cancel</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

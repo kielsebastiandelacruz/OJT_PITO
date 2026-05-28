@@ -27,9 +27,17 @@
         {% for post in posts %}
             <article class="card">
                 <div class="article-body">
-                    <div class="article-metadata">
-                        <span class="mr-2">By <strong>{{ post.author }}</strong></span>
-                        <small class="text-muted">on {{ post.date_posted|date:"F d, Y" }}</small>
+                    <div class="article-metadata" style="display: flex; align-items: center; margin-bottom: 15px;">
+                        {% if post.author.profile.image %}
+                            <img src="{{ post.author.profile.image.url }}" alt="{{ post.author.username }}" class="feed-avatar">
+                        {% else %}
+                            <div style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid #1877F2; background-color: #e4e6eb; margin-right: 12px;"></div>
+                        {% endif %}
+                        
+                        <div style="line-height: 1.2;">
+                            <span style="font-weight: bold; color: #050505; font-size: 1.1rem;">{{ post.author.username }}</span><br>
+                            <span style="color: #65676B; font-size: 0.85rem;">{{ post.date_posted|date:"F d, Y" }}</span>
+                        </div>
                     </div>
                     <h2>
                         <a class="article-title" href="{% url 'post-detail' post.pk %}" style="text-decoration: none; color: #007bff;">{{ post.title }}</a>
