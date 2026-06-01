@@ -27,9 +27,20 @@ def delete_post_image(sender, instance, **kwargs):
     if instance.image and instance.image.name != 'default.jpg':
         instance.image.delete(save=False)
 
+GENDER_CHOICES = (
+    ('M', 'Male'),
+    ('F', 'Female'),
+    ('O', 'Other'),
+    ('P', 'Prefer not to say'),
+)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+
+    bio = models.TextField(max_length=500, blank=True, help_text="Short description about yourself")
+    birth_date = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'

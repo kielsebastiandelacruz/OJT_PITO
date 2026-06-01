@@ -1,112 +1,186 @@
 {% load static %}
-
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <title>My Blog</title>
-
     <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+    
+    <style>
+        /* Base Light Theme defaults */
+        body {
+            background-color: #ffffff;
+            color: #212529;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .profile-details-box {
+            background-color: #f8f9fa;
+            color: #333333;
+        }
+        .feed-author-name { color: #050505; }
+        .feed-date { color: #65676B; }
+        .article-content { color: #333333; }
 
+        /* FIX: Restored Pagination Styles (Light Mode) */
+        .pagination-link {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #2c3e50;
+            border-radius: 4px;
+            margin: 0 3px;
+            display: inline-block;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .pagination-link:hover {
+            background-color: #f8f9fa;
+        }
+        .pagination-active {
+            padding: 6px 12px;
+            background-color: #2c3e50;
+            color: white;
+            border: 1px solid #2c3e50;
+            border-radius: 4px;
+            margin: 0 3px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        /* Global Dark Mode rules override targeting layout adjustments */
+        body.dark-mode {
+            background-color: #18191a !important;
+            color: #f5f6f7 !important;
+        }
+        body.dark-mode .card {
+            background-color: #242526 !important;
+            border-color: #3a3b3c !important;
+            color: #f5f6f7 !important;
+        }
+        body.dark-mode .feed-title, 
+        body.dark-mode .profile-username,
+        body.dark-mode .profile-posts-heading {
+            color: #ffffff !important;
+        }
+        body.dark-mode .feed-author-name {
+            color: #e4e6eb !important;
+        }
+        body.dark-mode .feed-date {
+            color: #b0b3b8 !important;
+        }
+        body.dark-mode .article-content {
+            color: #e4e6eb !important;
+        }
+        
+        /* Fixes the rectangular profile details frame dynamically */
+        body.dark-mode .profile-details-box {
+            background-color: #3a3b3c !important;
+            color: #e4e6eb !important;
+            border-color: #4e4f50 !important;
+        }
+        body.dark-mode .search-input {
+            background-color: #242526 !important;
+            color: #ffffff !important;
+            border-color: #3a3b3c !important;
+        }
+        
+        /* FIX: Pagination Styles (Dark Mode Override) */
+        body.dark-mode .pagination-link {
+            border-color: #3a3b3c !important;
+            color: #e4e6eb !important;
+        }
+        body.dark-mode .pagination-link:hover {
+            background-color: #3a3b3c;
+        }
+        body.dark-mode .pagination-active {
+            background-color: #1877F2;
+            border-color: #1877F2;
+            color: #ffffff;
+        }
+
+        /* FIX: Dynamic input controls visibility for update form elements */
+        body.dark-mode input[type="text"],
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background-color: #3a3b3c !important;
+            color: #ffffff !important;
+            border: 1px solid #4e4f50 !important;
+            padding: 8px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-
 <body>
-
     <nav class="navbar">
-
         <div class="nav-container">
-
             <a href="{% url 'blog-home' %}" class="nav-logo">My Blog</a>
-
-           
-
+            
             <div class="nav-links">
-
                 <a href="{% url 'blog-home' %}">Home</a>
-
-               
-
+                
                 {% if user.is_authenticated %}
-
-                    <!-- Added extra margin for cleaner nav spacing -->
-
                     <a href="{% url 'post-create' %}" style="margin-right: 20px; font-weight: 600;">New Post</a>
-
-                   
-
-                    <a href="{% url 'profile-update' %}" style="margin-right: 15px; display: inline-flex; align-items: center; text-decoration: none;">
+                    
+                    <a href="{% url 'user-profile' user.username %}" style="margin-right: 15px; display: inline-flex; align-items: center; text-decoration: none;">
                         <img src="{{ user.profile.image.url }}" alt="Nav Profile" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #1877F2; object-fit: cover; margin-right: 8px;">
                         <span style="color: #fff;">Hi, <strong>{{ user.username }}</strong>!</span>
                     </a>
 
+                    <button id="theme-toggle" class="theme-toggle-btn" style="margin-right: 10px; cursor: pointer;">🌙 Dark Mode</button>
+
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
-
                         {% csrf_token %}
-
                         <button type="submit" class="nav-logout-btn">Logout</button>
-
                     </form>
-
                 {% else %}
-
                     <a href="{% url 'login' %}">Login</a>
-
                     <a href="{% url 'register' %}">Register</a>
-
                 {% endif %}
-
             </div>
-
         </div>
-
     </nav>
 
-
-
-    <!-- Increased top margin for better vertical spacing -->
-
     <div class="main-wrapper" style="margin-top: 60px;">
-
-       
-
         {% if messages %}
-
             {% for message in messages %}
-
                 <div class="alert card">{{ message }}</div>
-
             {% endfor %}
-
         {% endif %}
-
-
-
-        <!-- CORRECTED: Spaces added around != operator -->
 
         {% if request.path != '/' %}
-
             <div style="margin-bottom: 30px;">
-
                 <a href="{% url 'blog-home' %}" style="text-decoration: none; color: #6c757d; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
-
                     &larr; Back
-
                 </a>
-
             </div>
-
         {% endif %}
 
-
-
         {% block content %}{% endblock %}
-
     </div>
 
-</body>
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme');
 
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            if(toggleBtn) toggleBtn.innerText = '☀️ Light Mode';
+        }
+
+        if(toggleBtn) {
+            toggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                let theme = 'light';
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    theme = 'dark';
+                    toggleBtn.innerText = '☀️ Light Mode';
+                } else {
+                    toggleBtn.innerText = '🌙 Dark Mode';
+                }
+                
+                localStorage.setItem('theme', theme);
+            });
+        }
+    </script>
+</body>
 </html>

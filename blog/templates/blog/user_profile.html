@@ -1,0 +1,45 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<div class="card profile-main-card" style="text-align: center; padding: 40px; margin-top: 20px;">
+    
+    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+        <img src="{{ profile_user.profile.image.url }}" alt="{{ profile_user.username }}" 
+             style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #1877F2; object-fit: cover;">
+    </div>
+
+    <h1 class="profile-username" style="font-size: 2rem; margin-bottom: 5px;">{{ profile_user.username }}</h1>
+    <p class="profile-email" style="color: #6c757d; margin-bottom: 25px;">{{ profile_user.email }}</p>
+    
+    <div class="profile-details-box" style="text-align: left; padding: 20px; border-radius: 8px; margin: 0 auto 30px auto; max-width: 500px; border: 1px solid rgba(0,0,0,0.1);">
+        <p style="margin-bottom: 12px;"><strong>Bio:</strong> {% if profile_user.profile.bio %}{{ profile_user.profile.bio }}{% else %}No description provided.{% endif %}</p>
+        <p style="margin-bottom: 12px;"><strong>Birthday:</strong> {% if profile_user.profile.birth_date %}{{ profile_user.profile.birth_date|date:"F d, Y" }}{% else %}Not specified{% endif %}</p>
+        <p style="margin-bottom: 0;"><strong>Gender:</strong> {% if profile_user.profile.gender %}{{ profile_user.profile.get_gender_display }}{% else %}Not specified{% endif %}</p>
+    </div>
+
+    {% if profile_user == user %}
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <a href="{% url 'profile-update' %}" class="btn-primary" style="text-decoration: none; text-align: center; padding: 10px 20px;">Edit Profile Details</a>
+        </div>
+    {% endif %}
+</div>
+
+<hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 40px 0;">
+
+<h2 class="profile-posts-heading" style="margin-bottom: 20px;">Posts by {{ profile_user.username }} ({{ posts.count }})</h2>
+
+{% for post in posts %}
+    <article class="card">
+        <div class="article-body">
+            <h2>
+                <a class="article-title" href="{% url 'post-detail' post.pk %}" style="text-decoration: none; color: #007bff;">{{ post.title }}</a>
+            </h2>
+            <p class="article-content">{{ post.content|truncatewords:30 }}</p>
+            <small style="color: #6c757d;">Posted on {{ post.date_posted|date:"F d, Y" }}</small>
+        </div>
+    </article>
+{% empty %}
+    <div class="card" style="text-align: center; padding: 30px;">
+        <p>This user hasn't posted anything yet.</p>
+    </div>
+{% endfor %}
+{% endblock %}
