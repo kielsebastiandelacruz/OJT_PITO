@@ -21,6 +21,24 @@
         .feed-date { color: #65676B; }
         .article-content { color: #333333; }
 
+        /* UNIFIED BUTTON STYLING (Light Mode defaults) */
+        .theme-toggle-btn {
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #6c757d;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+        .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
         /* FIX: Restored Pagination Styles (Light Mode) */
         .pagination-link {
             padding: 6px 12px;
@@ -71,6 +89,16 @@
             color: #e4e6eb !important;
         }
         
+        /* FIX FOR DARK MODE BUTTON APPEARANCE */
+        body.dark-mode .theme-toggle-btn {
+            background: transparent !important;
+            color: #ffffff !important;
+            border: 1px solid #6c757d !important;
+        }
+        body.dark-mode .theme-toggle-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
         /* Fixes the rectangular profile details frame dynamically */
         body.dark-mode .profile-details-box {
             background-color: #3a3b3c !important;
@@ -125,7 +153,7 @@
                         <span style="color: #fff;">Hi, <strong>{{ user.username }}</strong>!</span>
                     </a>
 
-                    <button id="theme-toggle" class="theme-toggle-btn" style="margin-right: 10px; cursor: pointer;">🌙 Dark Mode</button>
+                    <button id="theme-toggle" class="theme-toggle-btn" style="margin-right: 10px;">🌙 Dark Mode</button>
 
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
@@ -161,21 +189,27 @@
         const toggleBtn = document.getElementById('theme-toggle');
         const currentTheme = localStorage.getItem('theme');
 
+        // Apply dark mode immediately on page load if stored in memory
         if (currentTheme === 'dark') {
             document.body.classList.add('dark-mode');
-            if(toggleBtn) toggleBtn.innerText = '☀️ Light Mode';
+            if(toggleBtn) toggleBtn.innerHTML = '☀️ Light Mode';
+        } else {
+            if(toggleBtn) toggleBtn.innerHTML = '🌙 Dark Mode';
         }
 
         if(toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
+            toggleBtn.addEventListener('click', (e) => {
+                // Prevent button actions from interfering with native navigation setups
+                e.preventDefault(); 
+                
                 document.body.classList.toggle('dark-mode');
                 let theme = 'light';
                 
                 if (document.body.classList.contains('dark-mode')) {
                     theme = 'dark';
-                    toggleBtn.innerText = '☀️ Light Mode';
+                    toggleBtn.innerHTML = '☀️ Light Mode';
                 } else {
-                    toggleBtn.innerText = '🌙 Dark Mode';
+                    toggleBtn.innerHTML = '🌙 Dark Mode';
                 }
                 
                 localStorage.setItem('theme', theme);
