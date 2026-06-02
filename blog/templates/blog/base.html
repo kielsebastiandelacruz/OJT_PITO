@@ -86,12 +86,15 @@
             color: #ffffff !important;
         }
         
-        /* FIX: Gives dark mode usernames a clean, readable light-blue link color */
+        /* FIX: Bulletproof readable usernames across ALL pages in Dark Mode */
         body.dark-mode .feed-author-name,
         body.dark-mode .feed-author-name a,
         body.dark-mode .article-metadata a,
-        body.dark-mode a.mr-2 {
+        body.dark-mode a.mr-2,
+        body.dark-mode .text-muted a,
+        body.dark-mode a[href*="/user/"] {
             color: #8ab4f8 !important;
+            font-weight: 600 !important;
         }
         
         body.dark-mode .feed-date {
