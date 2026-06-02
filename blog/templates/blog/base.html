@@ -74,18 +74,34 @@
             border-color: #3a3b3c !important;
             color: #f5f6f7 !important;
         }
+        
+        /* FIX: Ensures Post Titles (and Title Links) are purely white and readable */
         body.dark-mode .feed-title, 
+        body.dark-mode .feed-title a,
+        body.dark-mode .article-title,
+        body.dark-mode .article-title a,
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
         body.dark-mode .profile-username,
         body.dark-mode .profile-posts-heading {
             color: #ffffff !important;
         }
-        body.dark-mode .feed-author-name {
-            color: #e4e6eb !important;
+        
+        /* FIX: Gives dark mode usernames a clean, readable light-blue link color */
+        body.dark-mode .feed-author-name,
+        body.dark-mode .feed-author-name a,
+        body.dark-mode .article-metadata a,
+        body.dark-mode a.mr-2 {
+            color: #8ab4f8 !important;
         }
+        
         body.dark-mode .feed-date {
             color: #b0b3b8 !important;
         }
-        body.dark-mode .article-content {
+        
+        /* FIX: Forces all body paragraphs and post content to be high-contrast off-white */
+        body.dark-mode .article-content,
+        body.dark-mode .card p,
+        body.dark-mode .card div {
             color: #e4e6eb !important;
         }
         
