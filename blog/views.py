@@ -9,6 +9,8 @@ from django.contrib.auth.models import User
 from .models import Post, Profile
 from .forms import UserRegisterForm, ProfileUpdateForm, UserUpdateForm
 
+# Testing github to ubuntu comment
+
 # 1. Read, replace 'home'
 class PostListView(ListView):
     model = Post
