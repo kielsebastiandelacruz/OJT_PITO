@@ -2,15 +2,16 @@
 {% block content %}
 
 <style>
-    /* 1. Inherit Snippet 2 CSS for Colors & Buttons */
+    /* Added text-align: center to perfectly balance the columns */
     .admin-table th, .admin-table td {
         vertical-align: middle;
-        padding: 18px 15px; /* Balanced spacing */
+        padding: 18px 15px; 
         white-space: nowrap; 
+        text-align: center; /* THIS CENTERS ALL THE TEXT/DATA */
     }
     
     .admin-table {
-        color: inherit; /* Supports Dark/Light mode automatically */
+        color: inherit; 
     }
 
     .action-btn {
@@ -40,63 +41,52 @@
     }
     .bg-active { background-color: #198754; } 
     .bg-inactive { background-color: #dc3545; }
-
-    .back-link {
-        text-decoration: none;
-        color: #6c757d;
-        display: inline-block;
-        margin-bottom: 15px;
-    }
-    .back-link:hover { color: #adb5bd; }
 </style>
 
-<div class="container mt-4">
-    
-    <a href="javascript:history.back()" class="back-link">&larr; Back</a>
-
+<div class="mt-2 text-center">
     <h2 class="mb-2 fw-bold">Admin Dashboard: User Management</h2>
     <p class="text-muted mb-4">Total Registered Users: <strong class="text-primary">{{ users.count }}</strong></p>
+</div>
 
-    <div class="table-responsive shadow-sm rounded border-top border-bottom">
-        <table class="table table-borderless table-hover admin-table w-100 mb-0">
-            <thead style="border-bottom: 2px solid rgba(128, 128, 128, 0.1);">
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Date Joined</th>
-                    <th>Last Login</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for u in users %}
-                <tr>
-                    <td><strong>{{ u.username }}</strong></td>
-                    <td>{{ u.email }}</td>
-                    <td>{{ u.first_name }}</td>
-                    <td>{{ u.last_name }}</td>
-                    <td>{{ u.date_joined|date:"Y-m-d" }}</td>
-                    <td>{{ u.last_login|date:"M d, Y H:i" }}</td>
-                    
-                    <td>
-                        {% if u.is_active %}
-                            <span class="status-badge bg-active">Active</span>
-                        {% else %}
-                            <span class="status-badge bg-inactive">Inactive</span>
-                        {% endif %}
-                    </td>
-                    
-                    <td>
-                        <a href="{% url 'toggle-status' u.id %}" class="action-btn">Toggle Status</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="table-responsive shadow-sm rounded border-top border-bottom">
+    <table class="table table-borderless table-hover admin-table w-100 mb-0 mx-auto">
+        <thead style="border-bottom: 2px solid rgba(128, 128, 128, 0.1);">
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date Joined</th>
+                <th>Last Login</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td><strong>{{ u.username }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.first_name }}</td>
+                <td>{{ u.last_name }}</td>
+                <td>{{ u.date_joined|date:"Y-m-d" }}</td>
+                <td>{{ u.last_login|date:"M d, Y H:i" }}</td>
+                
+                <td>
+                    {% if u.is_active %}
+                        <span class="status-badge bg-active">Active</span>
+                    {% else %}
+                        <span class="status-badge bg-inactive">Inactive</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    <a href="{% url 'toggle-status' u.id %}" class="action-btn">Toggle Status</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock content %}
