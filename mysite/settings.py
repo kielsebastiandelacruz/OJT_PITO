@@ -182,4 +182,5 @@ EMAIL_USE_TLS = True
 
 # Replace with your actual Gmail and the 16-character Google App Password
 EMAIL_HOST_USER = 'delacruzkielsebastian@gmail.com'      
-EMAIL_HOST_PASSWORD = 'your-16-character-app-password'
+EMAIL_HOST_PASSWORD = 'vdiieiqwzhhloosn' 
+DEFAULT_FROM_EMAIL = 'delacruzkielsebastian@gmail.com'
