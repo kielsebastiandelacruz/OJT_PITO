@@ -166,10 +166,20 @@ MEDIA_URL = '/media/'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-# Replace the console backend with SMTP
+# ==============================================================================
+# EMAIL & PROXY CONFIGURATION FOR PASSWORD RESET
+# ==============================================================================
+
+# Tell Django it's running behind an HTTPS reverse proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+# Live SMTP Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-actual-email@gmail.com'      # Use your full Gmail address
-EMAIL_HOST_PASSWORD = 'your-16-character-app-password' # Use the App Password you generated
+
+# Replace with your actual Gmail and the 16-character Google App Password
+EMAIL_HOST_USER = 'delacruzkielsebastian@gmail.com'      
+EMAIL_HOST_PASSWORD = 'your-16-character-app-password'
