@@ -8,8 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Post, Profile
 from .forms import UserRegisterForm, ProfileUpdateForm, UserUpdateForm
-
-# Testing github to ubuntu comment
+from django.contrib.admin.views.decorators import staff_member_required
 
 # 1. Read, replace 'home'
 class PostListView(ListView):
@@ -119,3 +118,32 @@ def user_profile_view(request, username):
         'posts': user_posts
     }
     return render(request, 'blog/user_profile.html', context)
+
+# Custom Dashboard View
+@staff_member_required(login_url='login')
+def custom_admin_dashboard(request):
+    # Fetch all users, newest first
+    users = User.objects.all().order_by('-date_joined')
+    
+    context = {
+        'users': users
+    }
+    return render(request, 'blog/custom_admin.html', context)
+
+# Activate / Deactivate User View
+@staff_member_required(login_url='login')
+def toggle_user_status(request, user_id):
+    user_to_toggle = get_object_or_404(User, id=user_id)
+    
+    # Protect superusers from accidentally deactivating themselves
+    if user_to_toggle.is_superuser:
+        messages.warning(request, "You cannot deactivate a superuser.")
+    else:
+        # Flip the active status
+        user_to_toggle.is_active = not user_to_toggle.is_active
+        user_to_toggle.save()
+        
+        status = "activated" if user_to_toggle.is_active else "deactivated"
+        messages.success(request, f"Account for {user_to_toggle.username} has been {status}.")
+        
+    return redirect('custom-admin')
