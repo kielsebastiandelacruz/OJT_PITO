@@ -6,9 +6,14 @@
     .admin-table th, .admin-table td {
         vertical-align: middle;
         padding: 15px 20px; 
-        white-space: nowrap; /* Forces text into one line so it doesn't squish */
+        white-space: nowrap; 
     }
     
+    /* Ensure the table text automatically inherits the dark/light mode colors from your base theme */
+    .admin-table {
+        color: inherit;
+    }
+
     /* Force the button to look like a button */
     .action-btn {
         display: inline-block;
@@ -40,13 +45,13 @@
     .bg-inactive { background-color: #dc3545; } /* Danger Red */
 </style>
 
-<div class="container-fluid px-5 mt-4">
+<div class="container mt-4">
     <h2 class="mb-2">Admin Dashboard: User Management</h2>
-    <p class="text-muted mb-4">Total Registered Users: <strong style="color: #0d6efd;">{{ users.count }}</strong></p>
+    <p class="text-muted mb-4">Total Registered Users: <strong class="text-primary">{{ users.count }}</strong></p>
 
-    <div class="table-responsive shadow-sm border rounded" style="background-color: #ffffff;">
-        <table class="table table-striped table-hover admin-table w-100 mb-0">
-            <thead style="background-color: #f8f9fa;">
+    <div class="table-responsive shadow-sm border rounded">
+        <table class="table table-hover admin-table w-100 mb-0">
+            <thead>
                 <tr>
                     <th>Username</th>
                     <th>Email</th>
