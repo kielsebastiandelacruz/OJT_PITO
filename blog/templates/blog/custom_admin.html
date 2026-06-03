@@ -2,24 +2,22 @@
 {% block content %}
 
 <style>
-    /* Custom spacing to make the table breathe */
+    /* 1. Inherit Snippet 2 CSS for Colors & Buttons */
     .admin-table th, .admin-table td {
         vertical-align: middle;
-        padding: 15px 20px; 
+        padding: 18px 15px; /* Balanced spacing */
         white-space: nowrap; 
     }
     
-    /* Ensure the table text automatically inherits the dark/light mode colors from your base theme */
     .admin-table {
-        color: inherit;
+        color: inherit; /* Supports Dark/Light mode automatically */
     }
 
-    /* Force the button to look like a button */
     .action-btn {
         display: inline-block;
-        background-color: #ffc107; /* Warning Yellow */
+        background-color: #ffc107; 
         color: #212529 !important;
-        padding: 6px 16px;
+        padding: 8px 18px;
         border-radius: 6px;
         text-decoration: none;
         font-weight: bold;
@@ -33,25 +31,35 @@
         cursor: pointer;
     }
 
-    /* Pretty Status Badges */
     .status-badge {
-        padding: 5px 12px;
+        padding: 6px 16px;
         border-radius: 20px;
         color: white;
         font-size: 0.9em;
         font-weight: 600;
     }
-    .bg-active { background-color: #198754; } /* Success Green */
-    .bg-inactive { background-color: #dc3545; } /* Danger Red */
+    .bg-active { background-color: #198754; } 
+    .bg-inactive { background-color: #dc3545; }
+
+    .back-link {
+        text-decoration: none;
+        color: #6c757d;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+    .back-link:hover { color: #adb5bd; }
 </style>
 
 <div class="container mt-4">
-    <h2 class="mb-2">Admin Dashboard: User Management</h2>
+    
+    <a href="javascript:history.back()" class="back-link">&larr; Back</a>
+
+    <h2 class="mb-2 fw-bold">Admin Dashboard: User Management</h2>
     <p class="text-muted mb-4">Total Registered Users: <strong class="text-primary">{{ users.count }}</strong></p>
 
-    <div class="table-responsive shadow-sm border rounded">
-        <table class="table table-hover admin-table w-100 mb-0">
-            <thead>
+    <div class="table-responsive shadow-sm rounded border-top border-bottom">
+        <table class="table table-borderless table-hover admin-table w-100 mb-0">
+            <thead style="border-bottom: 2px solid rgba(128, 128, 128, 0.1);">
                 <tr>
                     <th>Username</th>
                     <th>Email</th>
@@ -90,4 +98,5 @@
         </table>
     </div>
 </div>
+
 {% endblock content %}
