@@ -2,28 +2,28 @@
 {% block content %}
 
 <style>
-    /* Custom spacing to make the table breathe like your target design */
+    /* Custom spacing to make the table breathe */
     .admin-table th, .admin-table td {
         vertical-align: middle;
-        padding: 22px 15px; /* Increased padding for that airy, tall-row look */
+        padding: 15px 20px; 
         white-space: nowrap; 
     }
     
-    /* Ensure text inherits dark/light mode */
+    /* Ensure the table text automatically inherits the dark/light mode colors from your base theme */
     .admin-table {
         color: inherit;
     }
 
-    /* Flat button styling */
+    /* Force the button to look like a button */
     .action-btn {
         display: inline-block;
-        background-color: #ffc107; 
+        background-color: #ffc107; /* Warning Yellow */
         color: #212529 !important;
-        padding: 8px 20px;
+        padding: 6px 16px;
         border-radius: 6px;
         text-decoration: none;
         font-weight: bold;
-        border: none; /* Removed the border to match your flat design */
+        border: 1px solid #d39e00;
         transition: background-color 0.2s ease;
     }
     
@@ -35,42 +35,23 @@
 
     /* Pretty Status Badges */
     .status-badge {
-        padding: 6px 18px;
+        padding: 5px 12px;
         border-radius: 20px;
         color: white;
         font-size: 0.9em;
         font-weight: 600;
     }
-    .bg-active { background-color: #198754; } 
-    .bg-inactive { background-color: #dc3545; } 
-
-    /* Back button styling */
-    .back-link {
-        text-decoration: none;
-        color: #6c757d;
-        font-size: 0.95rem;
-        margin-bottom: 20px;
-        display: inline-block;
-        transition: color 0.2s;
-    }
-    .back-link:hover {
-        color: #ced4da; /* Lighter on hover for dark mode compatibility */
-    }
+    .bg-active { background-color: #198754; } /* Success Green */
+    .bg-inactive { background-color: #dc3545; } /* Danger Red */
 </style>
 
 <div class="container mt-4">
-    
-    <a href="javascript:history.back()" class="back-link">&larr; Back</a>
+    <h2 class="mb-2">Admin Dashboard: User Management</h2>
+    <p class="text-muted mb-4">Total Registered Users: <strong class="text-primary">{{ users.count }}</strong></p>
 
-    <h2 class="mb-3 fw-bold">Admin Dashboard: User Management</h2>
-    
-    <p class="mb-5" style="font-size: 1.05rem;">Total Registered Users: <strong>{{ users.count }}</strong></p>
-
-    <div class="table-responsive">
-        
-        <table class="table table-borderless admin-table w-100 mb-0">
-            
-            <thead style="border-bottom: 2px solid rgba(128, 128, 128, 0.2);">
+    <div class="table-responsive shadow-sm border rounded">
+        <table class="table table-hover admin-table w-100 mb-0">
+            <thead>
                 <tr>
                     <th>Username</th>
                     <th>Email</th>
