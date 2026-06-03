@@ -166,5 +166,10 @@ MEDIA_URL = '/media/'
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-# Outputs the reset email to your terminal/console for testing
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Replace the console backend with SMTP
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-actual-email@gmail.com'      # Use your full Gmail address
+EMAIL_HOST_PASSWORD = 'your-16-character-app-password' # Use the App Password you generated
