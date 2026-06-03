@@ -2,24 +2,26 @@
 {% block content %}
 
 <style>
-    /* Added text-align: center to perfectly balance the columns */
+    /* Centers all text inside the table */
     .admin-table th, .admin-table td {
         vertical-align: middle;
-        padding: 18px 15px; 
+        padding: 12px 15px; 
         white-space: nowrap; 
-        text-align: center; /* THIS CENTERS ALL THE TEXT/DATA */
+        text-align: center; 
     }
     
     .admin-table {
         color: inherit; 
     }
 
+    /* Smaller Action Button */
     .action-btn {
         display: inline-block;
         background-color: #ffc107; 
         color: #212529 !important;
-        padding: 8px 18px;
-        border-radius: 6px;
+        padding: 5px 12px;         /* Reduced padding */
+        font-size: 0.85rem;        /* Smaller text */
+        border-radius: 4px;
         text-decoration: none;
         font-weight: bold;
         border: 1px solid #d39e00;
@@ -32,61 +34,70 @@
         cursor: pointer;
     }
 
+    /* Status badge sizing */
     .status-badge {
-        padding: 6px 16px;
+        padding: 5px 12px;
         border-radius: 20px;
         color: white;
-        font-size: 0.9em;
+        font-size: 0.85rem;
         font-weight: 600;
     }
     .bg-active { background-color: #198754; } 
     .bg-inactive { background-color: #dc3545; }
+
+    /* This container restricts the width so it looks exactly like the blog feed */
+    .admin-container {
+        max-width: 1000px; /* Constrains the width */
+        margin: 0 auto; /* Centers the whole block on the page */
+    }
 </style>
 
-<div class="mt-2 text-center">
-    <h2 class="mb-2 fw-bold">Admin Dashboard: User Management</h2>
-    <p class="text-muted mb-4">Total Registered Users: <strong class="text-primary">{{ users.count }}</strong></p>
-</div>
+<div class="admin-container">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: inherit;">Admin Dashboard: User Management</h2>
+        <p class="text-muted">Total Registered Users: <strong class="text-primary">{{ users.count }}</strong></p>
+    </div>
 
-<div class="table-responsive shadow-sm rounded border-top border-bottom">
-    <table class="table table-borderless table-hover admin-table w-100 mb-0 mx-auto">
-        <thead style="border-bottom: 2px solid rgba(128, 128, 128, 0.1);">
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Date Joined</th>
-                <th>Last Login</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for u in users %}
-            <tr>
-                <td><strong>{{ u.username }}</strong></td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.first_name }}</td>
-                <td>{{ u.last_name }}</td>
-                <td>{{ u.date_joined|date:"Y-m-d" }}</td>
-                <td>{{ u.last_login|date:"M d, Y H:i" }}</td>
-                
-                <td>
-                    {% if u.is_active %}
-                        <span class="status-badge bg-active">Active</span>
-                    {% else %}
-                        <span class="status-badge bg-inactive">Inactive</span>
-                    {% endif %}
-                </td>
-                
-                <td>
-                    <a href="{% url 'toggle-status' u.id %}" class="action-btn">Toggle Status</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="card" style="padding: 20px; overflow-x: auto;">
+        <table class="table table-borderless table-hover admin-table w-100 mb-0">
+            <thead style="border-bottom: 2px solid rgba(128, 128, 128, 0.1);">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date Joined</th>
+                    <th>Last Login</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td><strong>{{ u.username }}</strong></td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.first_name }}</td>
+                    <td>{{ u.last_name }}</td>
+                    <td>{{ u.date_joined|date:"Y-m-d" }}</td>
+                    <td>{{ u.last_login|date:"M d, Y H:i" }}</td>
+                    
+                    <td>
+                        {% if u.is_active %}
+                            <span class="status-badge bg-active">Active</span>
+                        {% else %}
+                            <span class="status-badge bg-inactive">Inactive</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <a href="{% url 'toggle-status' u.id %}" class="action-btn">Toggle Status</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock content %}
