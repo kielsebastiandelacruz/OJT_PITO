@@ -76,7 +76,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             messages.success(request, 'Already log in into your account')
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('blog-home')
     else:
         form = UserRegisterForm()
