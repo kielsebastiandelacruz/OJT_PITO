@@ -135,7 +135,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Local Bypass settings to disable live email confirmations during development testing
 ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
