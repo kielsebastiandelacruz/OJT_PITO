@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db import transaction
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -7,7 +8,11 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Post, Profile
-from .forms import UserRegisterForm, ProfileUpdateForm, UserUpdateForm
+from .forms import (
+    UserRegisterForm, ProfileUpdateForm, UserUpdateForm,
+    EducationFormSet, CivilServiceFormSet, WorkExperienceFormSet, 
+    VoluntaryWorkFormSet, TrainingProgramFormSet
+)
 from django.contrib.admin.views.decorators import staff_member_required
 
 # 1. Read, replace 'home'
@@ -94,18 +99,47 @@ def profile_update(request):
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
+        # Instantiate formsets with POST data
+        edu_formset = EducationFormSet(request.POST, instance=profile)
+        elig_formset = CivilServiceFormSet(request.POST, instance=profile)
+        work_formset = WorkExperienceFormSet(request.POST, instance=profile)
+        vol_formset = VoluntaryWorkFormSet(request.POST, instance=profile)
+        train_formset = TrainingProgramFormSet(request.POST, instance=profile)
+        
+        if (u_form.is_valid() and p_form.is_valid() and edu_formset.is_valid() and 
+                elig_formset.is_valid() and work_formset.is_valid() and 
+                vol_formset.is_valid() and train_formset.is_valid()):
+            
+            with transaction.atomic():
+                u_form.save()
+                p_form.save()
+                edu_formset.save()
+                elig_formset.save()
+                work_formset.save()
+                vol_formset.save()
+                train_formset.save()
+                
             messages.success(request, 'Your profile details have been successfully updated!')
             return redirect('user-profile', username=request.user.username) 
     else:
         u_form = UserUpdateForm(instance=request.user)
         p_form = ProfileUpdateForm(instance=profile)
+        
+        # Instantiate clean or existing database formsets
+        edu_formset = EducationFormSet(instance=profile)
+        elig_formset = CivilServiceFormSet(instance=profile)
+        work_formset = WorkExperienceFormSet(instance=profile)
+        vol_formset = VoluntaryWorkFormSet(instance=profile)
+        train_formset = TrainingProgramFormSet(instance=profile)
 
     context = {
         'u_form': u_form,
-        'p_form': p_form
+        'p_form': p_form,
+        'edu_formset': edu_formset,
+        'elig_formset': elig_formset,
+        'work_formset': work_formset,
+        'vol_formset': vol_formset,
+        'train_formset': train_formset,
     }
     return render(request, 'blog/profile_update.html', context)
 
@@ -119,30 +153,23 @@ def user_profile_view(request, username):
     }
     return render(request, 'blog/user_profile.html', context)
 
-# Custom Dashboard View
 @staff_member_required(login_url='login')
 def custom_admin_dashboard(request):
-    # Fetch all users, newest first
     users = User.objects.all().order_by('-date_joined')
-    
     context = {
         'users': users
     }
     return render(request, 'blog/custom_admin.html', context)
 
-# Activate / Deactivate User View
 @staff_member_required(login_url='login')
 def toggle_user_status(request, user_id):
     user_to_toggle = get_object_or_404(User, id=user_id)
     
-    # Protect superusers from accidentally deactivating themselves
     if user_to_toggle.is_superuser:
         messages.warning(request, "You cannot deactivate a superuser.")
     else:
-        # Flip the active status
         user_to_toggle.is_active = not user_to_toggle.is_active
         user_to_toggle.save()
-        
         status = "activated" if user_to_toggle.is_active else "deactivated"
         messages.success(request, f"Account for {user_to_toggle.username} has been {status}.")
         

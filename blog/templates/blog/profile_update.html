@@ -1,24 +1,15 @@
-{% extends "blog/base.html" %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ u_form.as_p }}
+    {{ p_form.as_p }}
 
-{% block content %}
-    <div class="card" style="max-width: 600px; margin: 30px auto; padding: 40px; text-align: center;">
-        <h2 style="margin-bottom: 20px;">Update Profile Details</h2>
-        
-        <div style="display: flex; justify-content: center; margin-bottom: 30px;">
-            <img src="{{ user.profile.image.url }}" alt="Profile Image" 
-                 style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid #1877F2;">
-        </div>
+    <h4 class="mt-4">III. Educational Background</h4>
+    {{ edu_formset.management_form }}
+    {% for form in edu_formset %}{{ form.as_p }}{% endfor %}
 
-        <form method="POST" enctype="multipart/form-data" style="text-align: left;">
-            {% csrf_token %}
-            
-            {{ u_form.as_p }}
-            {{ p_form.as_p }}
-            
-            <div style="text-align: center; margin-top: 30px;">
-                <button class="btn-primary" type="submit" style="padding: 10px 30px; border: none; border-radius: 5px; cursor: pointer;">Save Changes</button>
-                <a href="{% url 'user-profile' user.username %}" style="margin-left: 15px; text-decoration: none; color: #6c757d;">Cancel</a>
-            </div>
-        </form>
-    </div>
-{% endblock %}
+    <h4 class="mt-4">IV. Civil Service Eligibility</h4>
+    {{ elig_formset.management_form }}
+    {% for form in elig_formset %}{{ form.as_p }}{% endfor %}
+
+    <button type="submit" class="btn btn-success mt-3">Save PDS Modifications</button>
+</form>

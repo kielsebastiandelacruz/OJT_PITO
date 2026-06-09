@@ -2,7 +2,6 @@
 {% block content %}
 
 <style>
-    /* Centers all text inside the table */
     .admin-table th, .admin-table td {
         vertical-align: middle;
         padding: 12px 15px; 
@@ -14,13 +13,12 @@
         color: inherit; 
     }
 
-    /* Smaller Action Button */
     .action-btn {
         display: inline-block;
         background-color: #ffc107; 
         color: #212529 !important;
-        padding: 5px 12px;         /* Reduced padding */
-        font-size: 0.85rem;        /* Smaller text */
+        padding: 5px 12px;
+        font-size: 0.85rem;
         border-radius: 4px;
         text-decoration: none;
         font-weight: bold;
@@ -34,7 +32,6 @@
         cursor: pointer;
     }
 
-    /* Status badge sizing */
     .status-badge {
         padding: 5px 12px;
         border-radius: 20px;
@@ -45,10 +42,19 @@
     .bg-active { background-color: #198754; } 
     .bg-inactive { background-color: #dc3545; }
 
-    /* This container restricts the width so it looks exactly like the blog feed */
+    .pds-indicator {
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background-color: #e9ecef;
+        color: #495057;
+        margin-right: 2px;
+        display: inline-block;
+    }
+
     .admin-container {
-        max-width: 1000px; /* Constrains the width */
-        margin: 0 auto; /* Centers the whole block on the page */
+        max-width: 1200px;
+        margin: 0 auto;
     }
 </style>
 
@@ -66,6 +72,9 @@
                     <th>Email</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Mobile Number</th>
+                    <th>Citizenship</th>
+                    <th>PDS Subsections</th>
                     <th>Date Joined</th>
                     <th>Last Login</th>
                     <th>Status</th>
@@ -77,8 +86,15 @@
                 <tr>
                     <td><strong>{{ u.username }}</strong></td>
                     <td>{{ u.email }}</td>
-                    <td>{{ u.first_name }}</td>
-                    <td>{{ u.last_name }}</td>
+                    <td>{{ u.first_name|default:"N/A" }}</td>
+                    <td>{{ u.last_name|default:"N/A" }}</td>
+                    <td>{{ u.profile.mobile_number|default:"N/A" }}</td>
+                    <td>{{ u.profile.get_citizenship_display|default:"Filipino" }}</td>
+                    <td>
+                        <span class="pds-indicator" title="Education Records">Edu: {{ u.profile.education.count }}</span>
+                        <span class="pds-indicator" title="Eligibilities">Elig: {{ u.profile.eligibilities.count }}</span>
+                        <span class="pds-indicator" title="Work Experiences">Work: {{ u.profile.work_experiences.count }}</span>
+                    </td>
                     <td>{{ u.date_joined|date:"Y-m-d" }}</td>
                     <td>{{ u.last_login|date:"M d, Y H:i" }}</td>
                     
@@ -99,5 +115,4 @@
         </table>
     </div>
 </div>
-
 {% endblock content %}

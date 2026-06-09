@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Post, Profile
+from django.forms import inlineformset_factory
+from .models import Post, Profile, Education, CivilServiceEligibility, WorkExperience, VoluntaryWork, TrainingProgram
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -11,12 +12,11 @@ class PostForm(forms.ModelForm):
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username']  # Passwords are included automatically by UserCreationForm
+        fields = ['username']
 
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        # We mapped your existing bio, birth_date, and gender alongside the new PDS fields
         fields = [
             'image', 'bio', 'birth_date', 'gender', 
             'middle_name', 'name_extension', 'place_of_birth', 
@@ -32,7 +32,6 @@ class ProfileUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Force the core identity fields to be required on the frontend to prevent incomplete PDS
         required_fields = ['birth_date', 'place_of_birth', 'gender', 'civil_status', 'mobile_number']
         for field in required_fields:
             self.fields[field].required = True
@@ -42,7 +41,6 @@ class ProfileUpdateForm(forms.ModelForm):
         citizenship = cleaned_data.get('citizenship')
         dual_citizenship_country = cleaned_data.get('dual_citizenship_country')
 
-        # Custom Validation: If Dual Citizen is selected, country must be provided
         if citizenship == 'D' and not dual_citizenship_country:
             self.add_error('dual_citizenship_country', 'Please specify the country for dual citizenship.')
         
@@ -54,3 +52,47 @@ class UserUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email']
+
+# --- INLINE FORMSETS FOR THE 5 ONE-TO-MANY PDS SECTIONS ---
+EducationFormSet = inlineformset_factory(
+    Profile, Education, 
+    fields=('level', 'school_name', 'degree_finished'), 
+    extra=1, can_delete=True
+)
+
+CivilServiceFormSet = inlineformset_factory(
+    Profile, CivilServiceEligibility, 
+    fields=('eligibility_type', 'license_number', 'valid_until'), 
+    widgets={'valid_until': forms.DateInput(attrs={'type': 'date'})},
+    extra=1, can_delete=True
+)
+
+WorkExperienceFormSet = inlineformset_factory(
+    Profile, WorkExperience, 
+    fields=('start_date', 'end_date', 'position_title', 'company_agency', 'status_of_appointment', 'government_service'), 
+    widgets={
+        'start_date': forms.DateInput(attrs={'type': 'date'}),
+        'end_date': forms.DateInput(attrs={'type': 'date'}),
+    },
+    extra=1, can_delete=True
+)
+
+VoluntaryWorkFormSet = inlineformset_factory(
+    Profile, VoluntaryWork, 
+    fields=('organization_name', 'start_date', 'end_date', 'number_of_hours', 'position'), 
+    widgets={
+        'start_date': forms.DateInput(attrs={'type': 'date'}),
+        'end_date': forms.DateInput(attrs={'type': 'date'}),
+    },
+    extra=1, can_delete=True
+)
+
+TrainingProgramFormSet = inlineformset_factory(
+    Profile, TrainingProgram, 
+    fields=('title', 'start_date', 'end_date', 'number_of_hours', 'training_type', 'sponsor'), 
+    widgets={
+        'start_date': forms.DateInput(attrs={'type': 'date'}),
+        'end_date': forms.DateInput(attrs={'type': 'date'}),
+    },
+    extra=1, can_delete=True
+)
