@@ -135,7 +135,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Local Bypass settings to disable live email confirmations during development testing
 ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_UNIQUE_EMAIL = True
 
 # Internationalization
