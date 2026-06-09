@@ -1,15 +1,149 @@
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ u_form.as_p }}
-    {{ p_form.as_p }}
+{% extends "blog/base.html" %}
+{% block content %}
+<div class="container my-5">
+    {% if u_form.errors or p_form.errors or edu_formset.errors or elig_formset.errors or work_formset.errors or vol_formset.errors or train_formset.errors %}
+        <div class="alert alert-danger shadow-sm mb-4" style="border-radius: 8px;">
+            <h5 class="fw-bold mb-2">⚠️ Structural Update Blocked:</h5>
+            <p class="mb-0 small">Ensure mandatory inputs (Birth Date, Place of Birth, Gender, Civil Status, Mobile Number) are populated accurately.</p>
+            <div class="small mt-2">
+                {{ p_form.errors }}
+                {{ u_form.errors }}
+            </div>
+        </div>
+    {% endif %}
 
-    <h4 class="mt-4">III. Educational Background</h4>
-    {{ edu_formset.management_form }}
-    {% for form in edu_formset %}{{ form.as_p }}{% endfor %}
+    <div class="card pds-update-card shadow-sm p-4 mx-auto" style="max-width: 850px; border-radius: 12px; background-color: var(--card-bg, #ffffff); border: 1px solid rgba(0,0,0,0.08); color: inherit;">
+        
+        <div class="text-center mb-4 border-bottom pb-3">
+            <h2 class="fw-bold" style="color: #1877F2;">Update Personal Data Sheet (PDS)</h2>
+            <p class="text-muted">Fill out your information across your background metrics below.</p>
+        </div>
 
-    <h4 class="mt-4">IV. Civil Service Eligibility</h4>
-    {{ elig_formset.management_form }}
-    {% for form in elig_formset %}{{ form.as_p }}{% endfor %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
-    <button type="submit" class="btn btn-success mt-3">Save PDS Modifications</button>
-</form>
+            <div class="p-3 mb-4 rounded border default-form-group" style="background-color: rgba(0,0,0,0.02);">
+                <h5 class="fw-bold text-secondary mb-3">Core Account Parameters</h5>
+                {{ u_form.as_p }}
+            </div>
+
+            <div class="p-3 mb-4 rounded border default-form-group" style="background-color: rgba(0,0,0,0.02);">
+                <h5 class="fw-bold text-secondary mb-3">I. Personal Details & Address Metrics</h5>
+                {{ p_form.as_p }}
+            </div>
+
+            <hr class="my-4">
+
+            <div class="mb-4 default-form-group">
+                <h4 class="fw-bold text-primary mb-3">III. Educational Background</h4>
+                {{ edu_formset.management_form }}
+                {% for form in edu_formset %}
+                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
+                        {{ form.as_p }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4 default-form-group">
+                <h4 class="fw-bold text-success mb-3">IV. Civil Service Eligibility</h4>
+                {{ elig_formset.management_form }}
+                {% for form in elig_formset %}
+                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
+                        {{ form.as_p }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4 default-form-group">
+                <h4 class="fw-bold text-danger mb-3">V. Work Experience</h4>
+                {{ work_formset.management_form }}
+                {% for form in work_formset %}
+                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
+                        {{ form.as_p }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4 default-form-group">
+                <h4 class="fw-bold text-warning mb-3">VI. Voluntary Work / Civic Organizations</h4>
+                {{ vol_formset.management_form }}
+                {% for form in vol_formset %}
+                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
+                        {{ form.as_p }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-4 default-form-group">
+                <h4 class="fw-bold text-info mb-3">VII. Learning and Development (L&D) / Training Programs</h4>
+                {{ train_formset.management_form }}
+                {% for form in train_formset %}
+                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
+                        {{ form.as_p }}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-4">
+                <a href="{% url 'user-profile' username=user.username %}" class="btn btn-outline-secondary px-4 py-2">
+                    Cancel & Return
+                </a>
+                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm" style="background-color: #1877F2; border-color: #1877F2;">
+                    Save PDS Modifications
+                </button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<style>
+    .bg-field-card { background-color: rgba(255, 255, 255, 0.6); }
+    .default-form-group p {
+        margin-bottom: 1.25rem;
+        font-weight: 500;
+    }
+    .default-form-group label {
+        display: inline-block;
+        margin-bottom: 0.4rem;
+        font-size: 0.95rem;
+        color: inherit;
+        opacity: 0.85;
+    }
+    /* Styles raw input fields cleanly */
+    .default-form-group input[type="text"], 
+    .default-form-group input[type="email"], 
+    .default-form-group input[type="date"], 
+    .default-form-group input[type="number"], 
+    .default-form-group select, 
+    .default-form-group textarea {
+        display: block;
+        width: 100%;
+        padding: 0.45rem 0.75rem;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #ffffff;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    }
+    .default-form-group input:focus, .default-form-group select:focus, .default-form-group textarea:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.18);
+    }
+    .default-form-group input[type="checkbox"] {
+        margin-left: 8px;
+        transform: scale(1.2);
+        cursor: pointer;
+    }
+    .ul.errorlist {
+        list-style: none;
+        padding-left: 0;
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}

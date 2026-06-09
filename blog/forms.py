@@ -53,7 +53,7 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
-# --- INLINE FORMSETS FOR THE 5 ONE-TO-MANY PDS SECTIONS ---
+# --- ALL 5 ONE-TO-MANY PDS INLINE FORMSETS ---
 EducationFormSet = inlineformset_factory(
     Profile, Education, 
     fields=('level', 'school_name', 'degree_finished'), 
