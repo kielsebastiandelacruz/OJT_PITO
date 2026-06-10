@@ -21,7 +21,7 @@
         .feed-date { color: #65676B; }
         .article-content { color: #333333; }
 
-        /* UNIFIED BUTTON SIZING & STYLING */
+        /* UNIFIED NAVIGATION SIZING & STYLING */
         .theme-toggle-btn, .nav-logout-btn {
             width: 135px !important;        /* Enforces strictly identical length */
             height: 38px !important;        /* Enforces strictly identical height */
@@ -57,6 +57,20 @@
             color: white !important;
             background-color: #dc3545 !important; /* Keeps your custom red accent alert on hover */
             border-color: #dc3545 !important;
+        }
+
+        /* NAVBAR RIGHT-SIDE ALIGNMENT & COMPACT GAP */
+        .nav-links {
+            gap: 8px !important; /* Enforces a tight, uniform gap between all right-side items */
+            align-items: center !important;
+            display: flex !important;
+        }
+        
+        /* Strips out old hardcoded inline margins so flexbox gap can take over perfectly */
+        .nav-links > a, 
+        .nav-links > button, 
+        .nav-links > form {
+            margin-right: 0 !important; 
         }
 
         /* FIX: Restored Pagination Styles (Light Mode) */
@@ -185,14 +199,14 @@
                 <a href="{% url 'blog-home' %}">Home</a>
                 
                 {% if user.is_authenticated %}
-                    <a href="{% url 'post-create' %}" style="margin-right: 20px; font-weight: 600;">New Post</a>
+                    <a href="{% url 'post-create' %}" style="font-weight: 600;">New Post</a>
                     
-                    <a href="{% url 'user-profile' user.username %}" style="margin-right: 15px; display: inline-flex; align-items: center; text-decoration: none;">
+                    <a href="{% url 'user-profile' user.username %}" style="display: inline-flex; align-items: center; text-decoration: none;">
                         <img src="{{ user.profile.image.url }}" alt="Nav Profile" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #1877F2; object-fit: cover; margin-right: 8px;">
                         <span style="color: #fff;">Hi, <strong>{{ user.username }}</strong>!</span>
                     </a>
 
-                    <button id="theme-toggle" class="theme-toggle-btn" style="margin-right: 10px;">🌙 Dark Mode</button>
+                    <button id="theme-toggle" class="theme-toggle-btn">🌙 Dark Mode</button>
 
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
@@ -238,7 +252,6 @@
 
         if(toggleBtn) {
             toggleBtn.addEventListener('click', (e) => {
-                // Prevent button actions from interfering with native navigation setups
                 e.preventDefault(); 
                 
                 document.body.classList.toggle('dark-mode');
