@@ -155,8 +155,13 @@
         align-items: center;
     }
     .equal-btn {
-        width: 240px; /* Enforces strictly identical width for both buttons */
-        padding: 0.6rem 1rem;
+        width: 240px !important;        /* Enforces strictly identical width */
+        height: 46px !important;       /* Enforces strictly identical height */
+        display: inline-flex !important; /* Normalizes layout behavior between <a> and <button> */
+        justify-content: center !important; /* Centers text horizontally */
+        align-items: center !important;     /* Centers text vertically */
+        box-sizing: border-box !important;  /* Prevents borders from stretching the heights differently */
+        padding: 0 !important;          /* Strips out uneven browser/Bootstrap default padding */
         text-align: center;
     }
     .form-action-buttons a.equal-btn {
