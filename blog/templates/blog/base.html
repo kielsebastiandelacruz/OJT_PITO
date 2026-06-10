@@ -21,22 +21,42 @@
         .feed-date { color: #65676B; }
         .article-content { color: #333333; }
 
-        /* UNIFIED BUTTON STYLING (Light Mode defaults) */
+        /* UNIFIED BUTTON SIZING & STYLING */
+        .theme-toggle-btn, .nav-logout-btn {
+            width: 135px !important;        /* Enforces strictly identical length */
+            height: 38px !important;        /* Enforces strictly identical height */
+            display: inline-flex !important; /* Normalizes rendering logic */
+            justify-content: center !important; /* Centers text horizontally */
+            align-items: center !important;     /* Centers text vertically */
+            box-sizing: border-box !important;  /* Prevents borders from distorting sizes */
+            padding: 0 !important;          /* Clears mismatched paddings */
+            font-size: 14px !important;     /* Uniform text sizing */
+            font-weight: 500 !important;
+            border-radius: 5px !important;  /* Uniform rounded corners */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Individual Theme Toggle Defaults */
         .theme-toggle-btn {
             background: transparent;
             color: #ffffff;
             border: 1px solid #6c757d;
-            border-radius: 5px;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
         }
         .theme-toggle-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+
+        /* Individual Logout Button Defaults */
+        .nav-logout-btn {
+            background: transparent;
+            color: #ced4da !important;
+            border: 1px solid #6c757d;
+        }
+        .nav-logout-btn:hover {
+            color: white !important;
+            background-color: #dc3545 !important; /* Keeps your custom red accent alert on hover */
+            border-color: #dc3545 !important;
         }
 
         /* FIX: Restored Pagination Styles (Light Mode) */
