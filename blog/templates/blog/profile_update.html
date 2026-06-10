@@ -28,14 +28,14 @@
             </div>
 
             <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
-                <h5 class="fw-bold text-secondary mb-3">I. Personal Details & Address Metrics</h5>
+                <h5 class="fw-bold text-secondary mb-3">Personal Details & Address Metrics</h5>
                 {{ p_form.as_p }}
             </div>
 
             <hr class="my-4">
 
             <div class="mb-4 default-form-group">
-                <h4 class="fw-bold text-primary mb-3">III. Educational Background</h4>
+                <h4 class="fw-bold text-primary mb-3">Educational Background</h4>
                 {{ edu_formset.management_form }}
                 {% for form in edu_formset %}
                     <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
@@ -45,7 +45,7 @@
             </div>
 
             <div class="mb-4 default-form-group">
-                <h4 class="fw-bold text-success mb-3">IV. Civil Service Eligibility</h4>
+                <h4 class="fw-bold text-success mb-3">Civil Service Eligibility</h4>
                 {{ elig_formset.management_form }}
                 {% for form in elig_formset %}
                     <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
@@ -55,7 +55,7 @@
             </div>
 
             <div class="mb-4 default-form-group">
-                <h4 class="fw-bold text-danger mb-3">V. Work Experience</h4>
+                <h4 class="fw-bold text-danger mb-3">Work Experience</h4>
                 {{ work_formset.management_form }}
                 {% for form in work_formset %}
                     <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
@@ -65,7 +65,7 @@
             </div>
 
             <div class="mb-4 default-form-group">
-                <h4 class="fw-bold text-warning mb-3">VI. Voluntary Work / Civic Organizations</h4>
+                <h4 class="fw-bold text-warning mb-3">Voluntary Work / Civic Organizations</h4>
                 {{ vol_formset.management_form }}
                 {% for form in vol_formset %}
                     <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
@@ -75,7 +75,7 @@
             </div>
 
             <div class="mb-4 default-form-group">
-                <h4 class="fw-bold text-info mb-3">VII. Learning and Development (L&D) / Training Programs</h4>
+                <h4 class="fw-bold text-info mb-3">Learning and Development (L&D) / Training Programs</h4>
                 {{ train_formset.management_form }}
                 {% for form in train_formset %}
                     <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
@@ -84,11 +84,12 @@
                 {% endfor %}
             </div>
 
-            <div class="d-flex justify-content-end align-items-center gap-3 pt-4 border-top mt-4 mb-2">
-                <a href="{% url 'user-profile' username=user.username %}" class="btn btn-secondary px-4 py-2 fw-bold text-white text-decoration-none shadow-sm">
+            <!-- Form Control Buttons -->
+            <div class="form-action-buttons pt-4 border-top mt-4 mb-2">
+                <a href="{% url 'user-profile' username=user.username %}" class="btn btn-secondary fw-bold text-white text-decoration-none shadow-sm equal-btn">
                     Cancel & Return
                 </a>
-                <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm" style="background-color: #1877F2; border-color: #1877F2;">
+                <button type="submit" class="btn btn-primary fw-bold shadow-sm equal-btn" style="background-color: #1877F2; border-color: #1877F2;">
                     Save PDS Modifications
                 </button>
             </div>
@@ -119,6 +120,7 @@
     .default-form-group textarea {
         display: block;
         width: 100%;
+        box-sizing: border-box; /* Ensures padding doesn't stretch widths unevenly */
         padding: 0.45rem 0.75rem;
         font-size: 0.95rem;
         line-height: 1.5;
@@ -144,6 +146,21 @@
         color: #dc3545;
         font-size: 0.85rem;
         margin-top: 4px;
+    }
+
+    /* Button Layout Styling */
+    .form-action-buttons {
+        display: flex;
+        justify-content: flex-end; /* Aligns buttons to the right */
+        align-items: center;
+    }
+    .equal-btn {
+        width: 240px; /* Enforces strictly identical width for both buttons */
+        padding: 0.6rem 1rem;
+        text-align: center;
+    }
+    .form-action-buttons a.equal-btn {
+        margin-right: 15px; /* Hard-codes the space between the cancel and save buttons */
     }
 
     /* --- DARK MODE ADAPTATION --- */
