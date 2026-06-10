@@ -22,12 +22,12 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
 
-            <div class="p-3 mb-4 rounded border default-form-group" style="background-color: rgba(0,0,0,0.02);">
+            <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
                 <h5 class="fw-bold text-secondary mb-3">Core Account Parameters</h5>
                 {{ u_form.as_p }}
             </div>
 
-            <div class="p-3 mb-4 rounded border default-form-group" style="background-color: rgba(0,0,0,0.02);">
+            <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
                 <h5 class="fw-bold text-secondary mb-3">I. Personal Details & Address Metrics</h5>
                 {{ p_form.as_p }}
             </div>
@@ -84,8 +84,8 @@
                 {% endfor %}
             </div>
 
-            <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-4">
-                <a href="{% url 'user-profile' username=user.username %}" class="btn btn-outline-secondary px-4 py-2">
+            <div class="d-flex justify-content-end align-items-center gap-3 pt-4 border-top mt-4 mb-2">
+                <a href="{% url 'user-profile' username=user.username %}" class="btn btn-secondary px-4 py-2 fw-bold text-white text-decoration-none shadow-sm">
                     Cancel & Return
                 </a>
                 <button type="submit" class="btn btn-primary px-5 py-2 fw-bold shadow-sm" style="background-color: #1877F2; border-color: #1877F2;">
@@ -98,7 +98,7 @@
 </div>
 
 <style>
-    .bg-field-card { background-color: rgba(255, 255, 255, 0.6); }
+    .bg-field-card { background-color: rgba(0,0,0,0.02); }
     .default-form-group p {
         margin-bottom: 1.25rem;
         font-weight: 500;
@@ -144,6 +144,50 @@
         color: #dc3545;
         font-size: 0.85rem;
         margin-top: 4px;
+    }
+
+    /* --- DARK MODE ADAPTATION --- */
+    body.dark-mode .default-form-group label,
+    [data-theme="dark"] .default-form-group label,
+    body.dark-mode p, [data-theme="dark"] p {
+        color: #e4e6eb !important; 
+    }
+
+    body.dark-mode h2, body.dark-mode h4, body.dark-mode h5,
+    [data-theme="dark"] h2, [data-theme="dark"] h4, [data-theme="dark"] h5 {
+        color: #ffffff !important;
+    }
+
+    body.dark-mode .bg-field-card,
+    [data-theme="dark"] .bg-field-card,
+    body.dark-mode .pds-update-card,
+    [data-theme="dark"] .pds-update-card {
+        background-color: #242526 !important;
+        border-color: #3a3b3c !important;
+        color: #e4e6eb !important;
+    }
+
+    body.dark-mode .default-form-group input, 
+    body.dark-mode .default-form-group select, 
+    body.dark-mode .default-form-group textarea,
+    [data-theme="dark"] .default-form-group input, 
+    [data-theme="dark"] .default-form-group select, 
+    [data-theme="dark"] .default-form-group textarea {
+        background-color: #3a3b3c !important;
+        color: #e4e6eb !important;
+        border: 1px solid #4e4f50 !important;
+    }
+
+    body.dark-mode .default-form-group input:focus, 
+    body.dark-mode .default-form-group select:focus, 
+    body.dark-mode .default-form-group textarea:focus,
+    [data-theme="dark"] .default-form-group input:focus, 
+    [data-theme="dark"] .default-form-group select:focus, 
+    [data-theme="dark"] .default-form-group textarea:focus {
+        background-color: #4e4f50 !important;
+        color: #ffffff !important;
+        border-color: #1877F2 !important;
+        box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.4) !important;
     }
 </style>
 {% endblock %}
