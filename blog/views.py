@@ -150,9 +150,15 @@ def user_profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
     user_posts = Post.objects.filter(author=profile_user).order_by('-date_posted')
     
+    # PRIVACY CHECK: True ONLY if the logged-in user is the profile owner OR an Admin
+    can_view_full_pds = False
+    if request.user == profile_user or request.user.is_superuser:
+        can_view_full_pds = True
+    
     context = {
         'profile_user': profile_user,
-        'posts': user_posts
+        'posts': user_posts,
+        'can_view_full_pds': can_view_full_pds, # Pass the flag to the template
     }
     return render(request, 'blog/user_profile.html', context)
 
