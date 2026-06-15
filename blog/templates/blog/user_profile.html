@@ -7,9 +7,28 @@
              style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid #1877F2; object-fit: cover;">
     </div>
 
-    <h1 class="profile-username" style="font-size: 2rem; margin-bottom: 5px;">{{ profile_user.first_name }} {{ profile_user.last_name|default:profile_user.username }}</h1>
-    <p class="profile-email" style="color: #6c757d; margin-bottom: 5px;">{{ profile_user.email }}</p>
-    <p style="color: #6c757d; margin-bottom: 25px;"><strong>Birthday:</strong> {% if profile_user.profile.birth_date %}{{ profile_user.profile.birth_date|date:"F d, Y" }}{% else %}Not specified{% endif %}</p>
+    <h1 class="profile-name" style="font-size: 2rem; margin-bottom: 5px;">
+        {{ profile_user.first_name|default:"Not specified" }} 
+        {% if profile_user.profile.middle_name %}{{ profile_user.profile.middle_name }} {% endif %}
+        {{ profile_user.last_name }}
+    </h1>
+    
+    <p class="profile-username" style="font-weight: bold; color: #1877F2; margin-bottom: 5px; font-size: 1.1rem;">
+        @{{ profile_user.username }}
+    </p>
+
+    <p class="profile-email" style="color: #6c757d; margin-bottom: 5px;">
+        {{ profile_user.email|default:"Not specified" }}
+    </p>
+
+    <p style="color: #6c757d; margin-bottom: 25px;">
+        <strong>Birthday:</strong> 
+        {% if profile_user.profile.birth_date %}
+            {{ profile_user.profile.birth_date|date:"F d, Y" }}
+        {% else %}
+            Not specified
+        {% endif %}
+    </p>
     
     {% if can_view_full_pds %}
         <div class="profile-details-box" style="text-align: left; padding: 20px; border-radius: 8px; margin: 0 auto 30px auto; max-width: 600px; border: 1px solid rgba(0,0,0,0.1);">
