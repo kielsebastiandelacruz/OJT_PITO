@@ -1,87 +1,215 @@
 {% extends "blog/base.html" %}
 {% block content %}
 <div class="container my-5">
-    {% if u_form.errors or p_form.errors or edu_formset.errors or elig_formset.errors or work_formset.errors or vol_formset.errors or train_formset.errors %}
+    {% if u_form.errors or p_form.errors or perm_form.errors or res_form.errors or edu_formset.errors or elig_formset.errors or work_formset.errors or vol_formset.errors or train_formset.errors %}
         <div class="alert alert-danger shadow-sm mb-4" style="border-radius: 8px;">
             <h5 class="fw-bold mb-2">⚠️ Structural Update Blocked:</h5>
-            <p class="mb-0 small">Ensure mandatory inputs (Birth Date, Place of Birth, Gender, Civil Status, Mobile Number) are populated accurately.</p>
+            <p class="mb-0 small">Ensure mandatory inputs (Birth Date, Gender, Mobile Number) are populated accurately.</p>
             <div class="small mt-2">
                 {{ p_form.errors }}
                 {{ u_form.errors }}
+                {{ perm_form.errors }}
+                {{ res_form.errors }}
             </div>
         </div>
     {% endif %}
 
     <div class="card pds-update-card shadow-sm p-4 mx-auto" style="max-width: 850px; border-radius: 12px; background-color: var(--card-bg, #ffffff); border: 1px solid rgba(0,0,0,0.08); color: inherit;">
-        
+
         <div class="text-center mb-4 border-bottom pb-3">
             <h2 class="fw-bold" style="color: #1877F2;">Update Personal Data Sheet (PDS)</h2>
             <p class="text-muted">Fill out your information across your background metrics below.</p>
         </div>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" id="pds-form">
             {% csrf_token %}
 
+            <!-- Core Account -->
             <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
                 <h5 class="fw-bold text-secondary mb-3">Core Account Parameters</h5>
-                {{ u_form.as_p }}
+                <p>{{ u_form.username.label_tag }} {{ u_form.username }}</p>
+                <p>{{ u_form.first_name.label_tag }} {{ u_form.first_name }}</p>
+                <p>{{ p_form.middle_name.label_tag }} {{ p_form.middle_name }}</p>
+                <p>{{ u_form.last_name.label_tag }} {{ u_form.last_name }}</p>
+                <p>{{ p_form.name_extension.label_tag }} {{ p_form.name_extension }}</p>
+                <p>
+                    <label>Age</label>
+                    <input type="text" value="{% if calculated_age %}{{ calculated_age }}{% else %}—{% endif %}" readonly
+                        style="background:rgba(0,0,0,0.04); cursor:not-allowed; color:inherit;"
+                        title="Auto-calculated from Date of Birth">
+                </p>
+                <p>{{ u_form.email.label_tag }} {{ u_form.email }}</p>
+                <p>{{ p_form.mobile_number.label_tag }} {{ p_form.mobile_number }}</p>
+                <p>{{ p_form.employee_number.label_tag }} {{ p_form.employee_number }}</p>
             </div>
 
+            <!-- Personal Details -->
             <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
-                <h5 class="fw-bold text-secondary mb-3">Personal Details & Address Metrics</h5>
-                {{ p_form.as_p }}
+                <h5 class="fw-bold text-secondary mb-3">Personal Details</h5>
+                <p>{{ p_form.image.label_tag }} {{ p_form.image }}</p>
+                <p>{{ p_form.bio.label_tag }} {{ p_form.bio }}</p>
+                <p>{{ p_form.birth_date.label_tag }} {{ p_form.birth_date }}</p>
+                <p>{{ p_form.gender_3nf.label_tag }} {{ p_form.gender_3nf }}</p>
+                <p>{{ p_form.civil_status_3nf.label_tag }} {{ p_form.civil_status_3nf }}</p>
+
+                <!-- Citizenship with conditional sub-fields -->
+                <p>{{ p_form.citizenship_3nf.label_tag }} {{ p_form.citizenship_3nf }}</p>
+
+                <div id="citizenship-filipino-block" style="display:none; margin-left:1rem; margin-bottom:1rem;">
+                    <p>{{ p_form.citizenship_acquisition_3nf.label_tag }} {{ p_form.citizenship_acquisition_3nf }}</p>
+                </div>
+
+                <div id="citizenship-dual-block" style="display:none; margin-left:1rem; margin-bottom:1rem;">
+                    <p>{{ p_form.dual_citizenship_country.label_tag }} {{ p_form.dual_citizenship_country }}</p>
+                </div>
+            </div>
+
+            <!-- Address - Permanent -->
+            <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
+                <h5 class="fw-bold text-secondary mb-3">Address — Permanent</h5>
+                <p>{{ perm_form.province.label_tag }} {{ perm_form.province }}</p>
+                <p>{{ perm_form.city_municipality.label_tag }} {{ perm_form.city_municipality }}</p>
+                <p>{{ perm_form.barangay.label_tag }} {{ perm_form.barangay }}</p>
+                <p>{{ perm_form.zip_code.label_tag }} {{ perm_form.zip_code }}</p>
+                <p>{{ perm_form.subdivision_village.label_tag }} {{ perm_form.subdivision_village }}</p>
+                <p>{{ perm_form.street.label_tag }} {{ perm_form.street }}</p>
+                <p>{{ perm_form.house_block_lot.label_tag }} {{ perm_form.house_block_lot }}</p>
+            </div>
+
+            <!-- Address - Residential -->
+            <div class="p-3 mb-4 rounded border default-form-group bg-field-card">
+                <h5 class="fw-bold text-secondary mb-3">Address — Residential</h5>
+                <p>{{ res_form.province.label_tag }} {{ res_form.province }}</p>
+                <p>{{ res_form.city_municipality.label_tag }} {{ res_form.city_municipality }}</p>
+                <p>{{ res_form.barangay.label_tag }} {{ res_form.barangay }}</p>
+                <p>{{ res_form.zip_code.label_tag }} {{ res_form.zip_code }}</p>
+                <p>{{ res_form.subdivision_village.label_tag }} {{ res_form.subdivision_village }}</p>
+                <p>{{ res_form.street.label_tag }} {{ res_form.street }}</p>
+                <p>{{ res_form.house_block_lot.label_tag }} {{ res_form.house_block_lot }}</p>
             </div>
 
             <hr class="my-4">
 
-            <div class="mb-4 default-form-group">
+            <!-- Education -->
+            <div class="mb-4 default-form-group formset-block" id="edu-block">
                 <h4 class="fw-bold text-primary mb-3">Educational Background</h4>
                 {{ edu_formset.management_form }}
-                {% for form in edu_formset %}
-                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
-                        {{ form.as_p }}
-                    </div>
-                {% endfor %}
+                <div id="edu-rows">
+                    {% for form in edu_formset %}
+                        <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+                            {{ form.id }}
+                            <p>{{ form.level_3nf.label_tag }} {{ form.level_3nf }}</p>
+                            <p>{{ form.school_name.label_tag }} {{ form.school_name }}</p>
+                            <p>{{ form.degree_finished.label_tag }} {{ form.degree_finished }}</p>
+                            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+                            {% if form.instance.pk %}
+                                <label class="delete-row-label">{{ form.DELETE }} Delete this entry</label>
+                            {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-sm btn-primary add-row-btn" data-target="edu">+ Add Education</button>
             </div>
 
-            <div class="mb-4 default-form-group">
+            <!-- Civil Service Eligibility -->
+            <div class="mb-4 default-form-group formset-block" id="elig-block">
                 <h4 class="fw-bold text-success mb-3">Civil Service Eligibility</h4>
                 {{ elig_formset.management_form }}
-                {% for form in elig_formset %}
-                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
-                        {{ form.as_p }}
-                    </div>
-                {% endfor %}
+                <div id="elig-rows">
+                    {% for form in elig_formset %}
+                        <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+                            {{ form.id }}
+                            <p>{{ form.eligibility_type.label_tag }} {{ form.eligibility_type }}</p>
+                            <p>{{ form.license_number.label_tag }} {{ form.license_number }}</p>
+                            <p>{{ form.valid_until.label_tag }} {{ form.valid_until }}</p>
+                            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+                            {% if form.instance.pk %}
+                                <label class="delete-row-label">{{ form.DELETE }} Delete this entry</label>
+                            {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-sm btn-success add-row-btn" data-target="elig">+ Add Eligibility</button>
             </div>
 
-            <div class="mb-4 default-form-group">
+            <!-- Work Experience -->
+            <div class="mb-4 default-form-group formset-block" id="work-block">
                 <h4 class="fw-bold text-danger mb-3">Work Experience</h4>
                 {{ work_formset.management_form }}
-                {% for form in work_formset %}
-                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
-                        {{ form.as_p }}
-                    </div>
-                {% endfor %}
+                <div id="work-rows">
+                    {% for form in work_formset %}
+                        <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+                            {{ form.id }}
+                            <p>{{ form.start_date.label_tag }} {{ form.start_date }}</p>
+                            <p>{{ form.end_date.label_tag }} {{ form.end_date }}</p>
+                            <p>{{ form.position_title.label_tag }} {{ form.position_title }}</p>
+                            <p>{{ form.company_agency.label_tag }} {{ form.company_agency }}</p>
+                            <p>{{ form.status_of_appointment.label_tag }} {{ form.status_of_appointment }}</p>
+                            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+                            {% if form.instance.pk %}
+                                <label class="delete-row-label">{{ form.DELETE }} Delete this entry</label>
+                            {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-sm btn-danger add-row-btn" data-target="work">+ Add Work Experience</button>
             </div>
 
-            <div class="mb-4 default-form-group">
+            <!-- Voluntary Work -->
+            <div class="mb-4 default-form-group formset-block" id="vol-block">
                 <h4 class="fw-bold text-warning mb-3">Voluntary Work / Civic Organizations</h4>
                 {{ vol_formset.management_form }}
-                {% for form in vol_formset %}
-                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
-                        {{ form.as_p }}
-                    </div>
-                {% endfor %}
+                <div id="vol-rows">
+                    {% for form in vol_formset %}
+                        <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+                            {{ form.id }}
+                            <p>{{ form.organization_name.label_tag }} {{ form.organization_name }}</p>
+                            <p>{{ form.start_date.label_tag }} {{ form.start_date }}</p>
+                            <p>{{ form.end_date.label_tag }} {{ form.end_date }}</p>
+                            <p>{{ form.number_of_hours.label_tag }} {{ form.number_of_hours }}</p>
+                            <p>{{ form.position.label_tag }} {{ form.position }}</p>
+                            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+                            {% if form.instance.pk %}
+                                <label class="delete-row-label">{{ form.DELETE }} Delete this entry</label>
+                            {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-sm btn-warning add-row-btn" data-target="vol">+ Add Voluntary Work</button>
             </div>
 
-            <div class="mb-4 default-form-group">
-                <h4 class="fw-bold text-info mb-3">Learning and Development (L&D) / Training Programs</h4>
+            <!-- Learning & Development / Training Programs -->
+            <div class="mb-4 default-form-group formset-block" id="train-block">
+                <h4 class="fw-bold text-info mb-3">Learning and Development (L&amp;D) / Training Programs</h4>
                 {{ train_formset.management_form }}
-                {% for form in train_formset %}
-                    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card">
-                        {{ form.as_p }}
-                    </div>
-                {% endfor %}
+                <div id="train-rows">
+                    {% for form in train_formset %}
+                        <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+                            {{ form.id }}
+                            <p>{{ form.title.label_tag }} {{ form.title }}</p>
+                            <p>{{ form.start_date.label_tag }} {{ form.start_date }}</p>
+                            <p>{{ form.end_date.label_tag }} {{ form.end_date }}</p>
+                            <p>{{ form.number_of_hours.label_tag }} {{ form.number_of_hours }}</p>
+                            <p>{{ form.training_type.label_tag }} {{ form.training_type }}</p>
+                            <p>{{ form.sponsor.label_tag }} {{ form.sponsor }}</p>
+                            {% if form.non_field_errors %}{{ form.non_field_errors }}{% endif %}
+                            {% if form.instance.pk %}
+                                <label class="delete-row-label">{{ form.DELETE }} Delete this entry</label>
+                            {% else %}
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-sm btn-info add-row-btn" data-target="train">+ Add Training Program</button>
             </div>
 
             <!-- Form Control Buttons -->
@@ -93,10 +221,42 @@
                     Save PDS Modifications
                 </button>
             </div>
-            
+
         </form>
     </div>
 </div>
+
+<!-- Hidden empty-form templates used by JS to add new rows -->
+<template id="empty-form-edu">
+    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+        {{ edu_formset.empty_form.as_p }}
+        <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+    </div>
+</template>
+<template id="empty-form-elig">
+    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+        {{ elig_formset.empty_form.as_p }}
+        <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+    </div>
+</template>
+<template id="empty-form-work">
+    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+        {{ work_formset.empty_form.as_p }}
+        <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+    </div>
+</template>
+<template id="empty-form-vol">
+    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+        {{ vol_formset.empty_form.as_p }}
+        <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+    </div>
+</template>
+<template id="empty-form-train">
+    <div class="p-3 mb-3 border rounded shadow-xs bg-field-card formset-row">
+        {{ train_formset.empty_form.as_p }}
+        <button type="button" class="btn btn-sm btn-outline-danger remove-row-btn">Delete</button>
+    </div>
+</template>
 
 <style>
     .bg-field-card { background-color: rgba(0,0,0,0.02); }
@@ -112,15 +272,15 @@
         opacity: 0.85;
     }
     /* Styles raw input fields cleanly */
-    .default-form-group input[type="text"], 
-    .default-form-group input[type="email"], 
-    .default-form-group input[type="date"], 
-    .default-form-group input[type="number"], 
-    .default-form-group select, 
+    .default-form-group input[type="text"],
+    .default-form-group input[type="email"],
+    .default-form-group input[type="date"],
+    .default-form-group input[type="number"],
+    .default-form-group select,
     .default-form-group textarea {
         display: block;
         width: 100%;
-        box-sizing: border-box; /* Ensures padding doesn't stretch widths unevenly */
+        box-sizing: border-box;
         padding: 0.45rem 0.75rem;
         font-size: 0.95rem;
         line-height: 1.5;
@@ -147,39 +307,49 @@
         font-size: 0.85rem;
         margin-top: 4px;
     }
+    .remove-row-btn { margin-top: 0.5rem; margin-bottom: 0.25rem; }
+    .delete-row-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        color: #dc3545;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    .formset-row { position: relative; }
+    .add-row-btn { margin-top: 0.75rem; }
+    .formset-block { margin-bottom: 2rem; }
 
     /* Button Layout Styling */
     .form-action-buttons {
         display: flex;
-        justify-content: flex-end; /* Aligns buttons to the right */
+        justify-content: flex-end;
         align-items: center;
+        gap: 15px;
     }
     .equal-btn {
-        width: 240px !important;        /* Enforces strictly identical width */
-        height: 46px !important;       /* Enforces strictly identical height */
-        display: inline-flex !important; /* Normalizes layout behavior between <a> and <button> */
-        justify-content: center !important; /* Centers text horizontally */
-        align-items: center !important;     /* Centers text vertically */
-        box-sizing: border-box !important;  /* Prevents borders from stretching the heights differently */
-        padding: 0 !important;          /* Strips out uneven browser/Bootstrap default padding */
+        width: 240px !important;
+        height: 46px !important;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        padding: 0 !important;
         text-align: center;
-    }
-    .form-action-buttons a.equal-btn {
-        margin-right: 15px; /* Hard-codes the space between the cancel and save buttons */
     }
 
     /* --- DARK MODE ADAPTATION --- */
     body.dark-mode .default-form-group label,
     [data-theme="dark"] .default-form-group label,
     body.dark-mode p, [data-theme="dark"] p {
-        color: #e4e6eb !important; 
+        color: #e4e6eb !important;
     }
-
     body.dark-mode h2, body.dark-mode h4, body.dark-mode h5,
     [data-theme="dark"] h2, [data-theme="dark"] h4, [data-theme="dark"] h5 {
         color: #ffffff !important;
     }
-
     body.dark-mode .bg-field-card,
     [data-theme="dark"] .bg-field-card,
     body.dark-mode .pds-update-card,
@@ -188,28 +358,471 @@
         border-color: #3a3b3c !important;
         color: #e4e6eb !important;
     }
-
-    body.dark-mode .default-form-group input, 
-    body.dark-mode .default-form-group select, 
+    body.dark-mode .default-form-group input,
+    body.dark-mode .default-form-group select,
     body.dark-mode .default-form-group textarea,
-    [data-theme="dark"] .default-form-group input, 
-    [data-theme="dark"] .default-form-group select, 
+    [data-theme="dark"] .default-form-group input,
+    [data-theme="dark"] .default-form-group select,
     [data-theme="dark"] .default-form-group textarea {
         background-color: #3a3b3c !important;
         color: #e4e6eb !important;
         border: 1px solid #4e4f50 !important;
     }
-
-    body.dark-mode .default-form-group input:focus, 
-    body.dark-mode .default-form-group select:focus, 
+    body.dark-mode .default-form-group input:focus,
+    body.dark-mode .default-form-group select:focus,
     body.dark-mode .default-form-group textarea:focus,
-    [data-theme="dark"] .default-form-group input:focus, 
-    [data-theme="dark"] .default-form-group select:focus, 
+    [data-theme="dark"] .default-form-group input:focus,
+    [data-theme="dark"] .default-form-group select:focus,
     [data-theme="dark"] .default-form-group textarea:focus {
         background-color: #4e4f50 !important;
         color: #ffffff !important;
         border-color: #1877F2 !important;
         box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.4) !important;
     }
+
+    /* Dark-mode button legibility: Bootstrap's outline/colored buttons
+       can lose contrast against the dark card background, and the
+       delete-row-label's red text needs a lighter shade to stay
+       readable on dark backgrounds. */
+    body.dark-mode .btn-outline-danger,
+    [data-theme="dark"] .btn-outline-danger {
+        color: #ff6b6b !important;
+        border-color: #ff6b6b !important;
+        background-color: transparent !important;
+    }
+    body.dark-mode .btn-outline-danger:hover,
+    [data-theme="dark"] .btn-outline-danger:hover {
+        color: #ffffff !important;
+        background-color: #ff6b6b !important;
+    }
+    body.dark-mode .delete-row-label,
+    [data-theme="dark"] .delete-row-label {
+        color: #ff6b6b !important;
+    }
+    body.dark-mode .btn-secondary,
+    [data-theme="dark"] .btn-secondary {
+        background-color: #3a3b3c !important;
+        border-color: #4e4f50 !important;
+        color: #e4e6eb !important;
+    }
 </style>
+
+
+<script>
+// Generic Add/Delete handling for all 5 inline formsets.
+//
+// Add: clones the hidden <template>, rewrites the __prefix__ placeholder
+// to the next index -- based on how many ".formset-row" elements are
+// actually sitting in the DOM right now, not on the TOTAL_FORMS value --
+// appends the row, then writes the new total back into TOTAL_FORMS.
+//
+// Delete: only unsaved rows (rows with no instance.pk) get the "Delete"
+// button; saved rows get the DELETE checkbox instead, which Django
+// already handles correctly on its own. For an unsaved row, simply
+// removing its <div> from the page (the old behavior) is NOT enough:
+// Django's formset still expects form data at every index up to
+// TOTAL_FORMS, so the now-missing index gets treated as an all-blank
+// submitted form and fails validation on any required field in that
+// formset (e.g. start_date on Work Experience). The fix is to also
+// re-index every remaining row in that formset's container to stay
+// contiguous (0, 1, 2...) and rewrite TOTAL_FORMS to match.
+document.addEventListener('DOMContentLoaded', function () {
+    const prefixMap = {
+        edu: '{{ edu_formset.prefix }}',
+        elig: '{{ elig_formset.prefix }}',
+        work: '{{ work_formset.prefix }}',
+        vol: '{{ vol_formset.prefix }}',
+        train: '{{ train_formset.prefix }}'
+    };
+    const containerMap = {
+        edu: 'edu-rows',
+        elig: 'elig-rows',
+        work: 'work-rows',
+        vol: 'vol-rows',
+        train: 'train-rows'
+    };
+
+    document.querySelectorAll('.add-row-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const target = btn.getAttribute('data-target');
+            const prefix = prefixMap[target];
+            const rowsContainer = document.getElementById(containerMap[target]);
+            const totalFormsInput = document.getElementById('id_' + prefix + '-TOTAL_FORMS');
+
+            // Source of truth is the DOM, not the hidden input -- this
+            // keeps Add correct even immediately after a Delete.
+            const newIndex = rowsContainer.querySelectorAll('.formset-row').length;
+
+            const template = document.getElementById('empty-form-' + target);
+            const html = template.innerHTML.replace(/__prefix__/g, newIndex);
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html.trim();
+            const newRow = wrapper.firstElementChild;
+
+            // empty_form.as_p always renders the DELETE checkbox and the
+            // hidden id field as visible <p> elements (Django gives no
+            // way to exclude fields from as_p). New rows are never saved
+            // yet, so DELETE is meaningless here -- the Delete button
+            // already handles removing unsaved rows. Strip both <p>s.
+            newRow.querySelectorAll('p').forEach(function (p) {
+                if (p.querySelector('input[id$="-DELETE"]') || p.querySelector('input[id$="-id"]')) {
+                    p.remove();
+                }
+            });
+
+            rowsContainer.appendChild(newRow);
+            totalFormsInput.value = newIndex + 1;
+            attachRemoveHandlers();
+        });
+    });
+
+    function reindexFormset(target) {
+        const prefix = prefixMap[target];
+        const rowsContainer = document.getElementById(containerMap[target]);
+        const rows = rowsContainer.querySelectorAll('.formset-row');
+
+        rows.forEach(function (row, newIndex) {
+            row.querySelectorAll('[name^="' + prefix + '-"]').forEach(function (el) {
+                el.name = el.name.replace(/^[^-]+-\d+-/, prefix + '-' + newIndex + '-');
+            });
+            row.querySelectorAll('[id^="id_' + prefix + '-"]').forEach(function (el) {
+                el.id = el.id.replace(/^id_[^-]+-\d+-/, 'id_' + prefix + '-' + newIndex + '-');
+            });
+            row.querySelectorAll('label[for^="id_' + prefix + '-"]').forEach(function (label) {
+                label.setAttribute(
+                    'for',
+                    label.getAttribute('for').replace(/^id_[^-]+-\d+-/, 'id_' + prefix + '-' + newIndex + '-')
+                );
+            });
+        });
+
+        const totalFormsInput = document.getElementById('id_' + prefix + '-TOTAL_FORMS');
+        totalFormsInput.value = rows.length;
+    }
+
+    function attachRemoveHandlers() {
+        document.querySelectorAll('.remove-row-btn').forEach(function (btn) {
+            if (btn.dataset.bound) return;
+            btn.dataset.bound = 'true';
+            btn.addEventListener('click', function () {
+                const row = btn.closest('.formset-row');
+                if (!row) return;
+                const container = row.closest('[id$="-rows"]');
+                row.remove();
+                if (container) {
+                    const target = Object.keys(containerMap).find(function (key) {
+                        return containerMap[key] === container.id;
+                    });
+                    if (target) reindexFormset(target);
+                }
+            });
+        });
+    }
+    attachRemoveHandlers();
+});
+</script>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Citizenship conditional logic
+// Filipino selected  → show "By Birth / By Naturalization" sub-dropdown
+// Dual Citizenship   → show "Specify other country" text input
+// Age auto-update    → recalculates age when birth_date field changes
+// ─────────────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ── Citizenship conditional ───────────────────────────────────────────
+    const citizenshipSel   = document.getElementById('id_citizenship_3nf');
+    const filipinoBlock    = document.getElementById('citizenship-filipino-block');
+    const dualBlock        = document.getElementById('citizenship-dual-block');
+    const acqSel           = document.getElementById('id_citizenship_acquisition_3nf');
+    const dualCountryInput = document.getElementById('id_dual_citizenship_country');
+
+    function updateCitizenshipVisibility() {
+        if (!citizenshipSel) return;
+        const selected = citizenshipSel.options[citizenshipSel.selectedIndex];
+        const text = selected ? selected.text.trim() : '';
+
+        if (text === 'Filipino') {
+            if (filipinoBlock) filipinoBlock.style.display = 'block';
+            if (dualBlock)     dualBlock.style.display     = 'none';
+            // Clear dual country when switching away
+            if (dualCountryInput) dualCountryInput.value = '';
+        } else if (text === 'Dual Citizenship') {
+            if (filipinoBlock) filipinoBlock.style.display = 'none';
+            if (dualBlock)     dualBlock.style.display     = 'block';
+            // Clear acquisition when switching away
+            if (acqSel) acqSel.selectedIndex = 0;
+        } else {
+            if (filipinoBlock) filipinoBlock.style.display = 'none';
+            if (dualBlock)     dualBlock.style.display     = 'none';
+        }
+    }
+
+    if (citizenshipSel) {
+        citizenshipSel.addEventListener('change', updateCitizenshipVisibility);
+        // Run on page load to restore saved state
+        updateCitizenshipVisibility();
+    }
+
+    // ── Age auto-update from birth_date ───────────────────────────────────
+    const birthDateInput = document.getElementById('id_birth_date');
+    const ageDisplay     = document.querySelector('input[title="Auto-calculated from Date of Birth"]');
+
+    function recalcAge(dateStr) {
+        if (!dateStr || !ageDisplay) return;
+        // Accepts mm/dd/yyyy
+        const parts = dateStr.split('/');
+        if (parts.length !== 3) { ageDisplay.value = '—'; return; }
+        const m = parseInt(parts[0], 10) - 1;
+        const d = parseInt(parts[1], 10);
+        const y = parseInt(parts[2], 10);
+        if (isNaN(m) || isNaN(d) || isNaN(y) || y < 1900) { ageDisplay.value = '—'; return; }
+        const birth = new Date(y, m, d);
+        const today = new Date();
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) age--;
+        ageDisplay.value = age >= 0 ? age : '—';
+    }
+
+    if (birthDateInput) {
+        birthDateInput.addEventListener('input', function () {
+            recalcAge(this.value.trim());
+        });
+        birthDateInput.addEventListener('change', function () {
+            recalcAge(this.value.trim());
+        });
+    }
+});
+</script>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// Philippine Address Cascading Dropdowns — PSGC API
+// API: https://psgc.gitlab.io/api/  (official PSA data, no key needed)
+//
+// The form renders province/city/barangay as plain <input type="text">.
+// On DOMContentLoaded this script replaces each one with a <select>,
+// loads all provinces from the API, then cascades city → barangay → zip
+// on each change. On submit the select values (plain text names) are
+// written back so Django receives and saves the name string, not a code.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const PSGC = 'https://psgc.gitlab.io/api';
+
+// ── Fetch helper ─────────────────────────────────────────────────────────
+async function apiFetch(url) {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch (e) {
+    console.error('PSGC API error:', url, e);
+    return [];
+  }
+}
+
+// ── Replace a text <input> with a <select>, preserving id/name/class ─────
+function inputToSelect(inputEl) {
+  if (!inputEl || inputEl.tagName === 'SELECT') return inputEl;
+  const sel = document.createElement('select');
+  sel.id        = inputEl.id;
+  sel.name      = inputEl.name;
+  sel.className = inputEl.className;
+  // Copy inline styles so dark-mode / field styling is preserved
+  sel.style.cssText = inputEl.style.cssText;
+  inputEl.replaceWith(sel);
+  return sel;
+}
+
+// ── Populate a <select> from [{code, name}] ───────────────────────────────
+function fillSelect(selectEl, items, placeholder, savedName) {
+  selectEl.innerHTML = '';
+  const blank = document.createElement('option');
+  blank.value       = '';
+  blank.textContent = placeholder;
+  selectEl.appendChild(blank);
+
+  items.sort((a, b) => a.name.localeCompare(b.name));
+
+  items.forEach(item => {
+    const o          = document.createElement('option');
+    o.value          = item.name;   // store the NAME, not the code
+    o.dataset.code   = item.code;   // keep code for cascading API calls
+    o.textContent    = item.name;
+    if (savedName && item.name.toLowerCase() === savedName.toLowerCase()) {
+      o.selected = true;
+    }
+    selectEl.appendChild(o);
+  });
+}
+
+// ── Loading state helper ──────────────────────────────────────────────────
+function setLoading(selectEl, isLoading) {
+  selectEl.disabled = isLoading;
+  let spinner = selectEl.nextElementSibling;
+  if (isLoading) {
+    if (!spinner || !spinner.classList.contains('addr-spinner')) {
+      spinner = document.createElement('small');
+      spinner.className  = 'addr-spinner';
+      spinner.style.cssText = 'margin-left:8px; opacity:0.55; font-size:0.78rem;';
+      spinner.textContent = 'Loading…';
+      selectEl.insertAdjacentElement('afterend', spinner);
+    }
+  } else {
+    if (spinner && spinner.classList.contains('addr-spinner')) spinner.remove();
+  }
+}
+
+// ── Load all provinces (+ Metro Manila) into a select ────────────────────
+async function loadProvinces(selectEl, savedName) {
+  setLoading(selectEl, true);
+  const data = await apiFetch(PSGC + '/provinces/');
+  const items = data.map(p => ({ code: p.code, name: p.name }));
+  // NCR has no province row — add Metro Manila manually
+  items.push({ code: 'NCR', name: 'Metro Manila' });
+  fillSelect(selectEl, items, 'Select Province', savedName);
+  setLoading(selectEl, false);
+}
+
+// ── Load cities/municipalities for the selected province ─────────────────
+async function loadCities(provinceCode, selectEl, savedName) {
+  fillSelect(selectEl, [], 'Loading cities…', '');
+  setLoading(selectEl, true);
+
+  let data;
+  if (provinceCode === 'NCR') {
+    data = await apiFetch(PSGC + '/regions/130000000/cities-municipalities/');
+  } else {
+    data = await apiFetch(PSGC + '/provinces/' + provinceCode + '/cities-municipalities/');
+  }
+
+  const items = (data || []).map(c => ({ code: c.code, name: c.name }));
+  fillSelect(selectEl, items, 'Select City / Municipality', savedName);
+  setLoading(selectEl, false);
+}
+
+// ── Load barangays for the selected city, then fetch zip ─────────────────
+async function loadBarangays(cityCode, selectEl, zipEl, savedName) {
+  fillSelect(selectEl, [], 'Loading barangays…', '');
+  setLoading(selectEl, true);
+
+  const data  = await apiFetch(PSGC + '/cities-municipalities/' + cityCode + '/barangays/');
+  const items = (data || []).map(b => ({ code: b.code, name: b.name }));
+  fillSelect(selectEl, items, 'Select Barangay', savedName);
+  setLoading(selectEl, false);
+
+  // Zip code from city detail endpoint
+  if (zipEl) {
+    const detail = await apiFetch(PSGC + '/cities-municipalities/' + cityCode + '/');
+    zipEl.value = (detail && detail.zipCode) ? detail.zipCode : '';
+  }
+}
+
+// ── Get the PSGC code stored on the currently selected option ────────────
+function selectedCode(selectEl) {
+  const opt = selectEl.options[selectEl.selectedIndex];
+  return opt ? (opt.dataset.code || '') : '';
+}
+
+// ── Wire one complete address block ───────────────────────────────────────
+async function wireAddressBlock(
+    provinceEl, cityEl, barangayEl, zipEl,
+    savedProvince, savedCity, savedBarangay
+) {
+  if (!provinceEl || !cityEl || !barangayEl) return;
+
+  // ── 1. Load provinces, pre-selecting the saved value ─────────────────
+  await loadProvinces(provinceEl, savedProvince);
+
+  // ── 2. If a province was saved, load its cities ───────────────────────
+  if (savedProvince) {
+    const provCode = selectedCode(provinceEl);
+    if (provCode) {
+      await loadCities(provCode, cityEl, savedCity);
+
+      // ── 3. If a city was saved, load its barangays + zip ─────────────
+      if (savedCity) {
+        const cityCode = selectedCode(cityEl);
+        if (cityCode) {
+          await loadBarangays(cityCode, barangayEl, zipEl, savedBarangay);
+        }
+      }
+    }
+  }
+
+  // ── Province change ───────────────────────────────────────────────────
+  provinceEl.addEventListener('change', async function () {
+    const code = selectedCode(this);
+    fillSelect(cityEl,     [], 'Select City / Municipality', '');
+    fillSelect(barangayEl, [], 'Select Barangay', '');
+    if (zipEl) zipEl.value = '';
+    if (!code) return;
+    await loadCities(code, cityEl, '');
+  });
+
+  // ── City change ───────────────────────────────────────────────────────
+  cityEl.addEventListener('change', async function () {
+    const code = selectedCode(this);
+    fillSelect(barangayEl, [], 'Select Barangay', '');
+    if (zipEl) zipEl.value = '';
+    if (!code) return;
+    await loadBarangays(code, barangayEl, zipEl, '');
+  });
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async function () {
+
+  // Read whatever text value Django rendered into the input
+  function savedVal(id) {
+    const el = document.getElementById(id);
+    return el ? (el.value || '').trim() : '';
+  }
+
+  // Capture saved values BEFORE replacing inputs with selects
+  const permProvince  = savedVal('id_perm-province');
+  const permCity      = savedVal('id_perm-city_municipality');
+  const permBarangay  = savedVal('id_perm-barangay');
+  const resProvince   = savedVal('id_res-province');
+  const resCity       = savedVal('id_res-city_municipality');
+  const resBarangay   = savedVal('id_res-barangay');
+
+  // Replace text inputs → selects
+  const permProvinceEl  = inputToSelect(document.getElementById('id_perm-province'));
+  const permCityEl      = inputToSelect(document.getElementById('id_perm-city_municipality'));
+  const permBarangayEl  = inputToSelect(document.getElementById('id_perm-barangay'));
+  const permZipEl       = document.getElementById('id_perm-zip_code');
+
+  const resProvinceEl   = inputToSelect(document.getElementById('id_res-province'));
+  const resCityEl       = inputToSelect(document.getElementById('id_res-city_municipality'));
+  const resBarangayEl   = inputToSelect(document.getElementById('id_res-barangay'));
+  const resZipEl        = document.getElementById('id_res-zip_code');
+
+  // Wire both blocks in parallel
+  await Promise.all([
+    wireAddressBlock(permProvinceEl, permCityEl, permBarangayEl, permZipEl,
+                     permProvince, permCity, permBarangay),
+    wireAddressBlock(resProvinceEl,  resCityEl,  resBarangayEl,  resZipEl,
+                     resProvince,  resCity,  resBarangay),
+  ]);
+
+  // On submit: the select values are already plain text names (we store
+  // names in option.value, not codes) so nothing extra is needed.
+  // This listener is here only as a safety check.
+  const form = document.getElementById('pds-form');
+  if (form) {
+    form.addEventListener('submit', function () {
+      // Zip code field is readonly in the UI but must be writable for
+      // Django to receive the value — remove readonly on submit
+      [permZipEl, resZipEl].forEach(el => {
+        if (el) el.removeAttribute('readonly');
+      });
+    });
+  }
+});
+</script>
+
 {% endblock %}

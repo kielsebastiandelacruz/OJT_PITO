@@ -33,24 +33,90 @@
     {% if can_view_full_pds %}
         <div class="profile-details-box" style="text-align: left; padding: 20px; border-radius: 8px; margin: 0 auto 30px auto; max-width: 600px; border: 1px solid rgba(0,0,0,0.1);">
             <h5 style="border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 5px; margin-bottom: 15px; color: #1877F2;">Personal Details</h5>
-            <p style="margin-bottom: 12px;"><strong>Middle Name:</strong> {{ profile_user.profile.middle_name|default:"N/A" }} | <strong>Extension:</strong> {{ profile_user.profile.name_extension|default:"N/A" }}</p>
+
+            <p style="margin-bottom: 12px;">
+                <strong>Middle Name:</strong> {{ profile_user.profile.middle_name|default:"N/A" }}
+                &nbsp;|&nbsp;
+                <strong>Extension:</strong> {{ profile_user.profile.name_extension|default:"N/A" }}
+            </p>
+
+            <p style="margin-bottom: 12px;">
+                <strong>Age:</strong> {% if profile_age %}{{ profile_age }}{% else %}N/A{% endif %}
+            </p>
+
             <p style="margin-bottom: 12px;"><strong>Place of Birth:</strong> {{ profile_user.profile.place_of_birth|default:"N/A" }}</p>
-            <p style="margin-bottom: 12px;"><strong>Sex at Birth:</strong> {{ profile_user.profile.get_gender_display|default:"Not specified" }} | <strong>Civil Status:</strong> {{ profile_user.profile.get_civil_status_display|default:"N/A" }}</p>
-            <p style="margin-bottom: 12px;"><strong>Employee No:</strong> {{ profile_user.profile.employee_number|default:"N/A" }} | <strong>No. of Children:</strong> {{ profile_user.profile.number_of_children|default:"0" }}</p>
-            <p style="margin-bottom: 12px;"><strong>Citizenship:</strong> {{ profile_user.profile.get_citizenship_display }} {% if profile_user.profile.citizenship == 'D' %}({{ profile_user.profile.dual_citizenship_country }}){% endif %}</p>
+
+            <p style="margin-bottom: 12px;">
+                <strong>Sex at Birth:</strong> {{ profile_user.profile.gender_3nf|default:"Not specified" }}
+                &nbsp;|&nbsp;
+                <strong>Civil Status:</strong> {{ profile_user.profile.civil_status_3nf|default:"N/A" }}
+            </p>
+
+            <p style="margin-bottom: 12px;"><strong>Employee No:</strong> {{ profile_user.profile.employee_number|default:"N/A" }}</p>
+
+            <p style="margin-bottom: 12px;">
+                <strong>Citizenship:</strong> {{ profile_user.profile.citizenship_3nf|default:"N/A" }}
+                {% if profile_user.profile.citizenship_3nf and profile_user.profile.citizenship_3nf|stringformat:"s" == "Filipino" %}
+                    — {{ profile_user.profile.citizenship_acquisition_3nf|default:"" }}
+                {% endif %}
+                {% if profile_user.profile.citizenship_3nf and profile_user.profile.citizenship_3nf|stringformat:"s" == "Dual Citizenship" %}
+                    ({{ profile_user.profile.dual_citizenship_country|default:"" }})
+                {% endif %}
+            </p>
+
             <p style="margin-bottom: 12px;"><strong>Mobile:</strong> {{ profile_user.profile.mobile_number|default:"N/A" }}</p>
-            <p style="margin-bottom: 12px;"><strong>Address:</strong> {{ profile_user.profile.house_block_lot|default:"" }} {{ profile_user.profile.street|default:"" }} {{ profile_user.profile.barangay|default:"" }} {{ profile_user.profile.city_municipality|default:"" }} {{ profile_user.profile.province|default:"N/A" }}</p>
-            <p style="margin-bottom: 12px;"><strong>Bio:</strong> {{ profile_user.profile.bio|default:"No description provided." }}</p>
-            <p style="margin-bottom: 0;"><strong>Skills & Hobbies:</strong> {{ profile_user.profile.special_skills_hobbies|default:"N/A" }}</p>
+
+            {% with perm_addr=profile_user.pds_addresses.all %}
+            {% for addr in perm_addr %}
+                {% if addr.address_type == "Permanent" %}
+                <p style="margin-bottom: 12px;">
+                    <strong>Permanent Address:</strong>
+                    {{ addr.house_block_lot|default:"" }}
+                    {{ addr.street|default:"" }}
+                    {{ addr.subdivision_village|default:"" }}
+                    {{ addr.barangay|default:"" }}
+                    {{ addr.city_municipality|default:"" }}
+                    {{ addr.province|default:"" }}
+                    {% if addr.zip_code %}{{ addr.zip_code }}{% endif %}
+                </p>
+                {% endif %}
+                {% if addr.address_type == "Residential" %}
+                <p style="margin-bottom: 12px;">
+                    <strong>Residential Address:</strong>
+                    {{ addr.house_block_lot|default:"" }}
+                    {{ addr.street|default:"" }}
+                    {{ addr.subdivision_village|default:"" }}
+                    {{ addr.barangay|default:"" }}
+                    {{ addr.city_municipality|default:"" }}
+                    {{ addr.province|default:"" }}
+                    {% if addr.zip_code %}{{ addr.zip_code }}{% endif %}
+                </p>
+                {% endif %}
+            {% empty %}
+                <p style="margin-bottom: 12px;"><strong>Address:</strong> N/A</p>
+            {% endfor %}
+            {% endwith %}
+
+            <p style="margin-bottom: 12px;"><strong>Position/Bio:</strong> {{ profile_user.profile.bio|default:"No description provided." }}</p>
+
+            <p style="margin-bottom: 0;">
+                <strong>Special Skills:</strong>
+                {% with skills=profile_user.profile.special_skills.all %}
+                    {% if skills %}
+                        {% for s in skills %}{{ s.skill }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                {% endwith %}
+            </p>
         </div>
 
         <div style="text-align: left; margin: 0 auto; max-width: 600px; width: 100%;">
-            
             <div class="card" style="padding: 20px; margin-bottom: 20px;">
                 <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Educational Background</h5>
                 {% for edu in profile_user.profile.education.all %}
                     <div style="margin-bottom: 10px; border-left: 3px solid #1877F2; padding-left: 10px;">
-                        <strong>{{ edu.get_level_display }}</strong>: {{ edu.school_name }}<br>
+                        <strong>{{ edu.level_3nf|default:"N/A" }}</strong>: {{ edu.school_name }}<br>
                         <small class="text-muted">Degree: {{ edu.degree_finished|default:"N/A" }}</small>
                     </div>
                 {% empty %}
@@ -62,8 +128,12 @@
                 <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Civil Service Eligibility</h5>
                 {% for elig in profile_user.profile.eligibilities.all %}
                     <div style="margin-bottom: 10px; border-left: 3px solid #28a745; padding-left: 10px;">
-                        <strong>{{ elig.get_eligibility_type_display|default:elig.eligibility_type }}</strong><br>
-                        <small class="text-muted">License No: {{ elig.license_number|default:"N/A" }} | Valid Until: {{ elig.valid_until|date:"Y-m-d"|default:"N/A" }}</small>
+                        <strong>{{ elig.eligibility_type }}</strong><br>
+                        <small class="text-muted">
+                            License No: {{ elig.license_number|default:"N/A" }}
+                            &nbsp;|&nbsp;
+                            Valid Until: {{ elig.valid_until|date:"m/d/Y"|default:"N/A" }}
+                        </small>
                     </div>
                 {% empty %}
                     <p class="text-muted" style="margin-bottom: 0;">N/A</p>
@@ -72,10 +142,14 @@
 
             <div class="card" style="padding: 20px; margin-bottom: 20px;">
                 <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Work Experience</h5>
-                {% for work in profile_user.profile.work_experiences.all %}
+                {% for w in profile_user.profile.work_experiences.all %}
                     <div style="margin-bottom: 10px; border-left: 3px solid #dc3545; padding-left: 10px;">
-                        <strong>{{ work.position_title }}</strong> - {{ work.company_agency }}<br>
-                        <small class="text-muted">Duration: {{ work.start_date|date:"Y-m-d" }} to {{ work.end_date|date:"Y-m-d"|default:"Present" }} | Status: {{ work.status_of_appointment }} {% if work.government_service %}(Govt. Service){% endif %}</small>
+                        <strong>{{ w.position_title }}</strong> — {{ w.company_agency }}<br>
+                        <small class="text-muted">
+                            {{ w.start_date|date:"m/d/Y" }} –
+                            {% if w.end_date %}{{ w.end_date|date:"m/d/Y" }}{% else %}Present{% endif %}
+                            &nbsp;|&nbsp; {{ w.status_of_appointment }}
+                        </small>
                     </div>
                 {% empty %}
                     <p class="text-muted" style="margin-bottom: 0;">N/A</p>
@@ -83,11 +157,15 @@
             </div>
 
             <div class="card" style="padding: 20px; margin-bottom: 20px;">
-                <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Voluntary Work / Civic Organizations</h5>
-                {% for vol in profile_user.profile.voluntary_works.all %}
+                <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Voluntary Work</h5>
+                {% for v in profile_user.profile.voluntary_works.all %}
                     <div style="margin-bottom: 10px; border-left: 3px solid #ffc107; padding-left: 10px;">
-                        <strong>{{ vol.position }}</strong> - {{ vol.organization_name }}<br>
-                        <small class="text-muted">Dates: {{ vol.start_date|date:"Y-m-d" }} to {{ vol.end_date|date:"Y-m-d"|default:"N/A" }} | Hours: {{ vol.number_of_hours|default:"N/A" }}</small>
+                        <strong>{{ v.position }}</strong> — {{ v.organization_name }}<br>
+                        <small class="text-muted">
+                            {{ v.start_date|date:"m/d/Y" }} –
+                            {% if v.end_date %}{{ v.end_date|date:"m/d/Y" }}{% else %}N/A{% endif %}
+                            &nbsp;|&nbsp; {{ v.number_of_hours|default:"N/A" }} hrs
+                        </small>
                     </div>
                 {% empty %}
                     <p class="text-muted" style="margin-bottom: 0;">N/A</p>
@@ -95,17 +173,22 @@
             </div>
 
             <div class="card" style="padding: 20px; margin-bottom: 20px;">
-                <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Learning and Development (L&D) / Trainings</h5>
-                {% for train in profile_user.profile.trainings.all %}
+                <h5 style="color: #1877F2; margin-bottom: 15px; font-weight: bold;">Learning &amp; Development / Training</h5>
+                {% for t in profile_user.profile.trainings.all %}
                     <div style="margin-bottom: 10px; border-left: 3px solid #17a2b8; padding-left: 10px;">
-                        <strong>{{ train.title }}</strong> ({{ train.training_type }})<br>
-                        <small class="text-muted">Conducted By: {{ train.sponsor }} | Hours: {{ train.number_of_hours }} | Dates: {{ train.start_date|date:"Y-m-d" }} to {{ train.end_date|date:"Y-m-d" }}</small>
+                        <strong>{{ t.title }}</strong><br>
+                        <small class="text-muted">
+                            {{ t.start_date|date:"m/d/Y" }} –
+                            {% if t.end_date %}{{ t.end_date|date:"m/d/Y" }}{% else %}N/A{% endif %}
+                            &nbsp;|&nbsp; {{ t.number_of_hours|default:"N/A" }} hrs
+                            &nbsp;|&nbsp; {{ t.training_type }}
+                            &nbsp;|&nbsp; {{ t.sponsor }}
+                        </small>
                     </div>
                 {% empty %}
                     <p class="text-muted" style="margin-bottom: 0;">N/A</p>
                 {% endfor %}
             </div>
-
         </div>
     {% endif %}
 
@@ -118,13 +201,10 @@
 
 <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin: 40px 0;">
 <h2 class="profile-posts-heading" style="margin-bottom: 20px;">Posts by {{ profile_user.username }} ({{ posts.count }})</h2>
-
 {% for post in posts %}
     <article class="card">
         <div class="article-body">
-            <h2>
-                <a class="article-title" href="{% url 'post-detail' post.pk %}" style="text-decoration: none; color: #007bff;">{{ post.title }}</a>
-            </h2>
+            <h2><a class="article-title" href="{% url 'post-detail' post.pk %}" style="text-decoration: none; color: #007bff;">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content|truncatewords:30 }}</p>
             <small style="color: #6c757d;">Posted on {{ post.date_posted|date:"F d, Y" }}</small>
         </div>

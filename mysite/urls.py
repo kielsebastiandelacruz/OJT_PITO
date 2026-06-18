@@ -30,6 +30,7 @@ urlpatterns = [
     # Custom Admin Control Paths
     path('custom-admin/', blog_views.custom_admin_dashboard, name='custom-admin'),
     path('custom-admin/toggle/<int:user_id>/', blog_views.toggle_user_status, name='toggle-status'),
+    path('custom-admin/pds-search/', blog_views.pds_search, name='pds-search'),
 ]
 
 if settings.DEBUG:

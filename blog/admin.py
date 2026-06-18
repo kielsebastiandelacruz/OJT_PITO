@@ -1,5 +1,10 @@
 from django.contrib import admin
 from .models import Post, Profile, Education, CivilServiceEligibility, WorkExperience, VoluntaryWork, TrainingProgram
+from .models import (
+    GenderLookup, CivilStatusLookup, CitizenshipLookup, 
+    CitizenshipAcqLookup, EducationLevelLookup, Profile, Address,
+    Education, CivilServiceEligibility, WorkExperience, VoluntaryWork, TrainingProgram
+)
 
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'date_posted')
@@ -32,7 +37,27 @@ class TrainingProgramInline(admin.TabularInline):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'mobile_number', 'citizenship')
+    list_display = ('user', 'mobile_number', 'citizenship_3nf')
     search_fields = ('user__username', 'user__email', 'mobile_number')
     # This renders the 1:N forms directly inside the Profile view
     inlines = [EducationInline, CivilServiceInline, WorkExperienceInline, VoluntaryWorkInline, TrainingProgramInline]
+
+@admin.register(GenderLookup)
+class GenderLookupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+@admin.register(CivilStatusLookup)
+class CivilStatusLookupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+@admin.register(CitizenshipLookup)
+class CitizenshipLookupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+@admin.register(CitizenshipAcqLookup)
+class CitizenshipAcqLookupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+
+@admin.register(EducationLevelLookup)
+class EducationLevelLookupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')

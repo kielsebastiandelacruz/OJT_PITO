@@ -1,0 +1,584 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<style>
+  .pds-container { max-width: 1300px; margin: 0 auto; }
+
+  .search-bar-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+  .search-bar-wrapper input {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid rgba(128,128,128,0.4);
+    font-size: 1rem;
+    background: transparent;
+    color: inherit;
+    outline: none;
+  }
+  .search-bar-wrapper input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+  }
+  .search-bar-wrapper button {
+    padding: 10px 24px;
+    border-radius: 6px;
+    border: none;
+    background-color: #0d6efd;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .search-bar-wrapper button:hover { background-color: #0b5ed7; }
+
+  .result-card {
+    border: 1px solid rgba(128,128,128,0.2);
+    border-radius: 10px;
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+  }
+  .result-card-header {
+    padding: 14px 20px;
+    background: rgba(13,110,253,0.07);
+    border-bottom: 1px solid rgba(128,128,128,0.2);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .result-card-header img {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(13,110,253,0.35);
+    flex-shrink: 0;
+  }
+  .result-card-header .name-block .full-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: inherit;
+  }
+  .result-card-header .name-block .sub {
+    font-size: 0.82rem;
+    opacity: 0.6;
+    margin: 0;
+    color: inherit;
+  }
+  .result-card-body { padding: 20px; }
+
+  .pds-section { margin-bottom: 1.6rem; }
+  .pds-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    border-bottom: 1px solid rgba(128,128,128,0.2);
+    padding-bottom: 4px;
+    margin-bottom: 10px;
+    color: inherit;
+  }
+
+  .kv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px 20px;
+  }
+  .kv-item .kv-label {
+    font-size: 0.70rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    opacity: 0.45;
+    color: inherit;
+  }
+  .kv-item .kv-value {
+    font-size: 0.92rem;
+    margin: 0;
+    color: inherit;
+  }
+
+  .sub-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    color: inherit;
+  }
+  .sub-table th {
+    font-size: 0.73rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    opacity: 0.5;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(128,128,128,0.25);
+    text-align: left;
+    color: inherit;
+  }
+  .sub-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(128,128,128,0.1);
+    vertical-align: top;
+    color: inherit;
+  }
+  .sub-table tr:last-child td { border-bottom: none; }
+
+  .na-block {
+    opacity: 0.4;
+    font-size: 0.88rem;
+    font-style: italic;
+    padding: 4px 0;
+    color: inherit;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1.4rem;
+    font-size: 0.9rem;
+    opacity: 0.65;
+    color: inherit;
+    text-decoration: none;
+  }
+  .back-link:hover { opacity: 1; text-decoration: underline; }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem 0;
+    opacity: 0.45;
+    color: inherit;
+  }
+
+  .result-count {
+    font-size: 0.9rem;
+    opacity: 0.6;
+    margin-bottom: 1rem;
+    color: inherit;
+  }
+</style>
+
+<div class="pds-container">
+
+  <a href="{% url 'custom-admin' %}" class="back-link">← Back to Admin Dashboard</a>
+
+  <h2 class="fw-bold mb-1">PDS Search</h2>
+  <p class="text-muted mb-4" style="font-size:0.9rem;">
+    Search by last name, city/municipality, or province.
+  </p>
+
+  <form method="get" action="{% url 'pds-search' %}">
+    <div class="search-bar-wrapper">
+      <input
+        type="text"
+        name="q"
+        value="{{ query }}"
+        placeholder="e.g. Dela Cruz  or  Malolos"
+        autofocus
+      />
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if query %}
+    {% if results %}
+      <p class="mb-3" style="font-size:0.9rem; opacity:0.6;">
+        {{ results|length }} result{{ results|length|pluralize }} for
+        "<strong>{{ query }}</strong>"
+      </p>
+
+      {% for r in results %}
+      {% with u=r.user p=r.profile perm=r.permanent res=r.residential %}
+      <div class="result-card">
+
+        <div class="result-card-header">
+          {% if p and p.image %}
+            <img src="{{ p.image.url }}" alt="avatar">
+          {% else %}
+            <img src="/media/default.jpg" alt="avatar">
+          {% endif %}
+          <div class="name-block">
+            <p class="full-name">
+              {{ u.last_name|default:"—" }},
+              {{ u.first_name|default:"—" }}
+              {% if p %}{{ p.middle_name|default:"" }}{% endif %}
+              {% if p %}{{ p.name_extension|default:"" }}{% endif %}
+            </p>
+            <p class="sub">@{{ u.username }} &nbsp;·&nbsp; {{ u.email|default:"no email" }}</p>
+          </div>
+        </div>
+
+        <div class="result-card-body">
+
+          {# ══ 1. Core Account ══════════════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Core Account</div>
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Username</div>
+                <p class="kv-value">{{ u.username }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">First Name</div>
+                <p class="kv-value">{{ u.first_name|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Middle Name</div>
+                <p class="kv-value">{{ p.middle_name|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Last Name</div>
+                <p class="kv-value">{{ u.last_name|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Name Extension</div>
+                <p class="kv-value">{{ p.name_extension|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Email</div>
+                <p class="kv-value">{{ u.email|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Mobile Number</div>
+                <p class="kv-value">{{ p.mobile_number|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Employee Number</div>
+                <p class="kv-value">{{ p.employee_number|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Date Joined</div>
+                <p class="kv-value">{{ u.date_joined|date:"M d, Y" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Last Login</div>
+                <p class="kv-value">{{ u.last_login|date:"M d, Y H:i"|default:"Never" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Account Status</div>
+                <p class="kv-value">
+                  {% if u.is_active %}
+                    <span style="color:#198754; font-weight:600;">Active</span>
+                  {% else %}
+                    <span style="color:#dc3545; font-weight:600;">Inactive</span>
+                  {% endif %}
+                </p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Role</div>
+                <p class="kv-value">
+                  {% if u.is_superuser %}Admin
+                  {% elif u.is_staff %}Staff
+                  {% else %}User{% endif %}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {# ══ 2. Personal Details ══════════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Personal Details</div>
+            {% if p %}
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Position / Bio</div>
+                <p class="kv-value">{{ p.bio|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Date of Birth</div>
+                <p class="kv-value">{{ p.birth_date|date:"m/d/Y"|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Age</div>
+                <p class="kv-value">{% if r.age %}{{ r.age }}{% else %}N/A{% endif %}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Sex at Birth</div>
+                <p class="kv-value">{{ p.gender_3nf|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Civil Status</div>
+                <p class="kv-value">{{ p.civil_status_3nf|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Citizenship</div>
+                <p class="kv-value">{{ p.citizenship_3nf|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Citizenship Acquisition</div>
+                <p class="kv-value">{{ p.citizenship_acquisition_3nf|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Dual Citizenship Country</div>
+                <p class="kv-value">{{ p.dual_citizenship_country|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Place of Birth</div>
+                <p class="kv-value">{{ p.place_of_birth|default:"N/A" }}</p>
+              </div>
+            </div>
+            {% else %}
+            <p class="na-block">No profile data on file.</p>
+            {% endif %}
+          </div>
+
+          {# ══ 3. Permanent Address ═════════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Address — Permanent</div>
+            {% if perm %}
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Province</div>
+                <p class="kv-value">{{ perm.province|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">City / Municipality</div>
+                <p class="kv-value">{{ perm.city_municipality|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Barangay</div>
+                <p class="kv-value">{{ perm.barangay|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Zip Code</div>
+                <p class="kv-value">{{ perm.zip_code|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Subdivision / Village</div>
+                <p class="kv-value">{{ perm.subdivision_village|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Street</div>
+                <p class="kv-value">{{ perm.street|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">House / Block / Lot</div>
+                <p class="kv-value">{{ perm.house_block_lot|default:"N/A" }}</p>
+              </div>
+            </div>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 4. Residential Address ═══════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Address — Residential</div>
+            {% if res %}
+            <div class="kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Province</div>
+                <p class="kv-value">{{ res.province|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">City / Municipality</div>
+                <p class="kv-value">{{ res.city_municipality|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Barangay</div>
+                <p class="kv-value">{{ res.barangay|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Zip Code</div>
+                <p class="kv-value">{{ res.zip_code|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Subdivision / Village</div>
+                <p class="kv-value">{{ res.subdivision_village|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Street</div>
+                <p class="kv-value">{{ res.street|default:"N/A" }}</p>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">House / Block / Lot</div>
+                <p class="kv-value">{{ res.house_block_lot|default:"N/A" }}</p>
+              </div>
+            </div>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 5. Education Background ══════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Education Background</div>
+            {% if r.education %}
+            <table class="sub-table">
+              <thead>
+                <tr>
+                  <th>Level</th>
+                  <th>School Name</th>
+                  <th>Degree Finished</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for edu in r.education %}
+                <tr>
+                  <td>{{ edu.level_3nf|default:"N/A" }}</td>
+                  <td>{{ edu.school_name|default:"N/A" }}</td>
+                  <td>{{ edu.degree_finished|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 6. Civil Service Eligibility ════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Civil Service Eligibility</div>
+            {% if r.eligibilities %}
+            <table class="sub-table">
+              <thead>
+                <tr>
+                  <th>Eligibility Type</th>
+                  <th>License Number</th>
+                  <th>Valid Until</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for elig in r.eligibilities %}
+                <tr>
+                  <td>{{ elig.eligibility_type|default:"N/A" }}</td>
+                  <td>{{ elig.license_number|default:"N/A" }}</td>
+                  <td>{{ elig.valid_until|date:"m/d/Y"|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 7. Work Experience ═══════════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Work Experience</div>
+            {% if r.work_exp %}
+            <table class="sub-table">
+              <thead>
+                <tr>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Position Title</th>
+                  <th>Company / Agency</th>
+                  <th>Status of Appointment</th>
+                  <th>Gov't Service</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for w in r.work_exp %}
+                <tr>
+                  <td>{{ w.start_date|date:"m/d/Y"|default:"N/A" }}</td>
+                  <td>{{ w.end_date|date:"m/d/Y"|default:"Present" }}</td>
+                  <td>{{ w.position_title|default:"N/A" }}</td>
+                  <td>{{ w.company_agency|default:"N/A" }}</td>
+                  <td>{{ w.status_of_appointment|default:"N/A" }}</td>
+                  <td>{% if w.government_service %}Yes{% else %}No{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 8. Voluntary Work ════════════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Voluntary Work</div>
+            {% if r.vol_work %}
+            <table class="sub-table">
+              <thead>
+                <tr>
+                  <th>Organization</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>No. of Hours</th>
+                  <th>Position</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for v in r.vol_work %}
+                <tr>
+                  <td>{{ v.organization_name|default:"N/A" }}</td>
+                  <td>{{ v.start_date|date:"m/d/Y"|default:"N/A" }}</td>
+                  <td>{{ v.end_date|date:"m/d/Y"|default:"N/A" }}</td>
+                  <td>{{ v.number_of_hours|default:"N/A" }}</td>
+                  <td>{{ v.position|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 9. Learning & Development / Training ════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Learning &amp; Development / Training Programs</div>
+            {% if r.trainings %}
+            <table class="sub-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Hours</th>
+                  <th>Training Type</th>
+                  <th>Sponsor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for t in r.trainings %}
+                <tr>
+                  <td>{{ t.title|default:"N/A" }}</td>
+                  <td>{{ t.start_date|date:"m/d/Y"|default:"N/A" }}</td>
+                  <td>{{ t.end_date|date:"m/d/Y"|default:"N/A" }}</td>
+                  <td>{{ t.number_of_hours|default:"N/A" }}</td>
+                  <td>{{ t.training_type|default:"N/A" }}</td>
+                  <td>{{ t.sponsor|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+          {# ══ 10. Special Skills ═══════════════════════════════════ #}
+          <div class="pds-section">
+            <div class="pds-section-title">Special Skills</div>
+            {% if r.skills %}
+            <ul style="margin:0; padding-left:1.2rem; font-size:0.9rem;">
+              {% for s in r.skills %}
+              <li>{{ s.skill }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <p class="na-block">N/A</p>
+            {% endif %}
+          </div>
+
+        </div>{# end card-body #}
+      </div>{# end result-card #}
+      {% endwith %}
+      {% endfor %}
+
+    {% else %}
+      <div class="no-results">
+        <p style="font-size:1.1rem;">No PDS records found for "<strong>{{ query }}</strong>".</p>
+        <p style="font-size:0.88rem;">Try a last name, city, or province.</p>
+      </div>
+    {% endif %}
+  {% endif %}
+
+</div>
+{% endblock content %}
