@@ -110,7 +110,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-sm btn-primary add-row-btn" data-target="edu">+ Add Education</button>
+                <button type="button" class="btn-add add-row-btn" data-target="edu">+ Add Education</button>
             </div>
 
             <!-- Civil Service Eligibility -->
@@ -133,7 +133,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-sm btn-success add-row-btn" data-target="elig">+ Add Eligibility</button>
+                <button type="button" class="btn-add add-row-btn" data-target="elig">+ Add Eligibility</button>
             </div>
 
             <!-- Work Experience -->
@@ -158,7 +158,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-sm btn-danger add-row-btn" data-target="work">+ Add Work Experience</button>
+                <button type="button" class="btn-add add-row-btn" data-target="work">+ Add Work Experience</button>
             </div>
 
             <!-- Voluntary Work -->
@@ -183,7 +183,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-sm btn-warning add-row-btn" data-target="vol">+ Add Voluntary Work</button>
+                <button type="button" class="btn-add add-row-btn" data-target="vol">+ Add Voluntary Work</button>
             </div>
 
             <!-- Learning & Development / Training Programs -->
@@ -209,7 +209,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                <button type="button" class="btn btn-sm btn-info add-row-btn" data-target="train">+ Add Training Program</button>
+                <button type="button" class="btn-add add-row-btn" data-target="train">+ Add Training Program</button>
             </div>
 
             <!-- Form Control Buttons -->
@@ -260,6 +260,7 @@
 
 <style>
     .bg-field-card { background-color: rgba(0,0,0,0.02); }
+
     .default-form-group p {
         margin-bottom: 1.25rem;
         font-weight: 500;
@@ -271,7 +272,8 @@
         color: inherit;
         opacity: 0.85;
     }
-    /* Styles raw input fields cleanly */
+
+    /* ── Standard input fields ──────────────────────────────────────────── */
     .default-form-group input[type="text"],
     .default-form-group input[type="email"],
     .default-form-group input[type="date"],
@@ -290,16 +292,157 @@
         border-radius: 6px;
         transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     }
-    .default-form-group input:focus, .default-form-group select:focus, .default-form-group textarea:focus {
+    .default-form-group input:focus,
+    .default-form-group select:focus,
+    .default-form-group textarea:focus {
         border-color: #86b7fe;
         outline: 0;
         box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.18);
     }
     .default-form-group input[type="checkbox"] {
-        margin-left: 8px;
+        margin-left: 0;
+        margin-right: 6px;
         transform: scale(1.2);
         cursor: pointer;
+        flex-shrink: 0;
     }
+
+    /* ── File input — fix "Change:" label gap + style Choose File button ── */
+    /* Hide Django's "Change:" label text that creates the gap */
+    .default-form-group p > label[for*="image"],
+    .default-form-group p > label[for*="file"] {
+        display: none;
+    }
+
+    .default-form-group input[type="file"] {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.28rem 0.5rem;
+        font-size: 0.85rem;
+        border: 1.5px solid #ced4da;
+        border-radius: 6px;
+        background-color: #ffffff;
+        color: #212529;
+        cursor: pointer;
+        margin-top: 0;
+        transition: border-color 0.15s ease;
+    }
+    /* Chrome/Edge/Safari */
+    .default-form-group input[type="file"]::-webkit-file-upload-button {
+        padding: 0.32rem 0.9rem;
+        margin-right: 0.7rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border-radius: 5px;
+        border: none;
+        background-color: #1877F2;
+        color: #ffffff;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+    .default-form-group input[type="file"]::-webkit-file-upload-button:hover {
+        background-color: #1560cc;
+    }
+    /* Firefox + standard */
+    .default-form-group input[type="file"]::file-selector-button {
+        padding: 0.32rem 0.9rem;
+        margin-right: 0.7rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border-radius: 5px;
+        border: none;
+        background-color: #1877F2;
+        color: #ffffff;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+    .default-form-group input[type="file"]::file-selector-button:hover {
+        background-color: #1560cc;
+    }
+
+    /* ── Unified Button System ──────────────────────────────────────────── */
+    .btn-add,
+    .btn-delete {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        padding: 0.4rem 1rem !important;
+        font-size: 0.83rem !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+        border-radius: 6px !important;
+        cursor: pointer !important;
+        transition: background-color 0.15s ease, border-color 0.15s ease,
+                    color 0.15s ease, box-shadow 0.15s ease !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
+        font-family: inherit !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Add — solid blue fill */
+    .btn-add {
+        background-color: #1877F2 !important;
+        border: 1.5px solid #1877F2 !important;
+        color: #ffffff !important;
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    .btn-add:hover {
+        background-color: #1560cc !important;
+        border-color: #1560cc !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(24, 119, 242, 0.4) !important;
+    }
+
+    /* Delete button — outlined red */
+    .btn-delete {
+        background-color: transparent !important;
+        border: 1.5px solid #dc3545 !important;
+        color: #dc3545 !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    .btn-delete:hover {
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.35) !important;
+    }
+
+    /* Delete this entry label (checkbox + text) */
+    .delete-row-label {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 7px !important;
+        padding: 0.4rem 1rem !important;
+        font-size: 0.83rem !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+        border: 1.5px solid #dc3545 !important;
+        background-color: transparent !important;
+        color: #dc3545 !important;
+        cursor: pointer !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.25rem !important;
+        transition: background-color 0.15s ease, color 0.15s ease,
+                    box-shadow 0.15s ease !important;
+    }
+    .delete-row-label:hover {
+        background-color: #dc3545 !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.35) !important;
+    }
+    /* Make the checkbox inside the label white on hover */
+    .delete-row-label:hover input[type="checkbox"] {
+        accent-color: #ffffff;
+    }
+
+    .formset-row { position: relative; }
+    .formset-block { margin-bottom: 2rem; }
+
+    /* Error list */
     .ul.errorlist {
         list-style: none;
         padding-left: 0;
@@ -307,22 +450,8 @@
         font-size: 0.85rem;
         margin-top: 4px;
     }
-    .remove-row-btn { margin-top: 0.5rem; margin-bottom: 0.25rem; }
-    .delete-row-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-weight: 500;
-        color: #dc3545;
-        cursor: pointer;
-        margin-top: 0.5rem;
-        margin-bottom: 0.25rem;
-    }
-    .formset-row { position: relative; }
-    .add-row-btn { margin-top: 0.75rem; }
-    .formset-block { margin-bottom: 2rem; }
 
-    /* Button Layout Styling */
+    /* Bottom action buttons (Cancel & Save) */
     .form-action-buttons {
         display: flex;
         justify-content: flex-end;
@@ -340,10 +469,11 @@
         text-align: center;
     }
 
-    /* --- DARK MODE ADAPTATION --- */
+    /* ── Dark Mode ──────────────────────────────────────────────────────── */
     body.dark-mode .default-form-group label,
     [data-theme="dark"] .default-form-group label,
-    body.dark-mode p, [data-theme="dark"] p {
+    body.dark-mode p,
+    [data-theme="dark"] p {
         color: #e4e6eb !important;
     }
     body.dark-mode h2, body.dark-mode h4, body.dark-mode h5,
@@ -380,25 +510,53 @@
         box-shadow: 0 0 0 0.2rem rgba(24, 119, 242, 0.4) !important;
     }
 
-    /* Dark-mode button legibility: Bootstrap's outline/colored buttons
-       can lose contrast against the dark card background, and the
-       delete-row-label's red text needs a lighter shade to stay
-       readable on dark backgrounds. */
-    body.dark-mode .btn-outline-danger,
-    [data-theme="dark"] .btn-outline-danger {
-        color: #ff6b6b !important;
-        border-color: #ff6b6b !important;
-        background-color: transparent !important;
+    /* File input dark */
+    body.dark-mode .default-form-group input[type="file"],
+    [data-theme="dark"] .default-form-group input[type="file"] {
+        background-color: #3a3b3c !important;
+        border-color: #4e4f50 !important;
+        color: #e4e6eb !important;
     }
-    body.dark-mode .btn-outline-danger:hover,
-    [data-theme="dark"] .btn-outline-danger:hover {
+    body.dark-mode .default-form-group input[type="file"]::-webkit-file-upload-button,
+    [data-theme="dark"] .default-form-group input[type="file"]::-webkit-file-upload-button,
+    body.dark-mode .default-form-group input[type="file"]::file-selector-button,
+    [data-theme="dark"] .default-form-group input[type="file"]::file-selector-button {
+        background-color: #1877F2 !important;
         color: #ffffff !important;
-        background-color: #ff6b6b !important;
+        border: none !important;
     }
+
+    /* Add button dark */
+    body.dark-mode .btn-add,
+    [data-theme="dark"] .btn-add {
+        background-color: #1877F2 !important;
+        border-color: #1877F2 !important;
+        color: #ffffff !important;
+    }
+    body.dark-mode .btn-add:hover,
+    [data-theme="dark"] .btn-add:hover {
+        background-color: #3a8ff5 !important;
+        border-color: #3a8ff5 !important;
+    }
+
+    /* Delete button dark */
+    body.dark-mode .btn-delete,
     body.dark-mode .delete-row-label,
+    [data-theme="dark"] .btn-delete,
     [data-theme="dark"] .delete-row-label {
+        background-color: transparent !important;
+        border-color: #ff6b6b !important;
         color: #ff6b6b !important;
     }
+    body.dark-mode .btn-delete:hover,
+    body.dark-mode .delete-row-label:hover,
+    [data-theme="dark"] .btn-delete:hover,
+    [data-theme="dark"] .delete-row-label:hover {
+        background-color: #ff6b6b !important;
+        border-color: #ff6b6b !important;
+        color: #ffffff !important;
+    }
+
     body.dark-mode .btn-secondary,
     [data-theme="dark"] .btn-secondary {
         background-color: #3a3b3c !important;
@@ -406,7 +564,6 @@
         color: #e4e6eb !important;
     }
 </style>
-
 
 <script>
 // Generic Add/Delete handling for all 5 inline formsets.
@@ -600,58 +757,271 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// Philippine Address Cascading Dropdowns — PSGC API
-// API: https://psgc.gitlab.io/api/  (official PSA data, no key needed)
+// Philippine Address Cascading Dropdowns
+// Province / City / Barangay : psgc.gitlab.io
+// ZIP Code                   : psgc.cloud  (province-scoped lookup)
 //
-// The form renders province/city/barangay as plain <input type="text">.
-// On DOMContentLoaded this script replaces each one with a <select>,
-// loads all provinces from the API, then cascades city → barangay → zip
-// on each change. On submit the select values (plain text names) are
-// written back so Django receives and saves the name string, not a code.
+// ROOT CAUSE OF WRONG ZIP CODES — two problems fixed here:
+//
+// 1. Code padding mismatch:
+//    psgc.gitlab.io returns 9-digit codes (e.g. 160302000)
+//    psgc.cloud     stores  10-digit codes (e.g. 1603020000)
+//    Fix: index psgc.cloud codes both as-is AND with the trailing zero removed,
+//         and also try appending '0' to the gitlab code before looking up.
+//
+// 2. Name collision across provinces:
+//    Many Philippine cities share identical names across different provinces
+//    (San Jose, Santa Maria, Rosario, etc.). A flat name→zip dict means the
+//    last entry loaded from the API silently overwrites all earlier ones.
+//    Fix: build a PROVINCE-SCOPED name index keyed by the first 4 digits of
+//         the PSGC code, which uniquely identify a province in both APIs.
+//         Scoped lookup runs before the flat fallback, so same-named cities
+//         in different provinces always get the correct province's zip.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const PSGC = 'https://psgc.gitlab.io/api';
 
-// ── Fetch helper ─────────────────────────────────────────────────────────
+// ── Province-specific ZIP overrides ───────────────────────────────────────
+// Used when the API returns wrong or missing ZIP codes for a known province.
+// Key: province name lowercase → inner map of municipality name lowercase → zip
+// The lookup in getZip() checks this FIRST before the API cache, so these
+// values always win. Add more provinces/municipalities here as needed.
+const PROVINCE_ZIP_OVERRIDES = {
+  'bulacan': {
+    'angat':                    '3012',
+    'balagtas':                 '3016',
+    'baliuag':                  '3006',
+    'bocaue':                   '3018',
+    'bulacan':                  '3017',
+    'bustos':                   '3007',
+    'calumpit':                 '3003',
+    'doña remedios trinidad':   '3009',
+    'dona remedios trinidad':   '3009',  // ASCII fallback without ñ
+    'guiguinto':                '3015',
+    'hagonoy':                  '3002',
+    'city of malolos':          '3000',
+    'malolos':                  '3000',
+    'marilao':                  '3019',
+    'city of meycauayan':       '3020',
+    'meycauayan':               '3020',
+    'sapang palay':             '3024',
+    'norzagaray':               '3013',
+    'obando':                   '3021',
+    'pandi':                    '3014',
+    'paombong':                 '3001',
+    'plaridel':                 '3004',
+    'pulilan':                  '3005',
+    'san ildefonso':            '3010',
+    'san jose del monte':       '3023',
+    'city of san jose del monte': '3023',
+    'san miguel':               '3011',
+    'san rafael':               '3008',
+    'santa maria':              '3022',
+  },
+  // Add more provinces here following the same pattern:
+  // 'province name lowercase': {
+  //   'municipality name lowercase': 'zip',
+  // },
+};
+
+// ── Generic fetch helper ──────────────────────────────────────────────────
 async function apiFetch(url) {
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     return await res.json();
   } catch (e) {
-    console.error('PSGC API error:', url, e);
+    console.error('[PSGC] fetch error:', url, e);
     return [];
   }
 }
 
-// ── Replace a text <input> with a <select>, preserving id/name/class ─────
+// ── ZIP cache ─────────────────────────────────────────────────────────────
+// Three indexes built from psgc.cloud:
+//   byCode        — exact PSGC code (and padding variants) → zip
+//   byNameScoped  — provincePrefix (first 4 digits) → name → zip
+//   byName        — name → zip (flat fallback, may collide for shared names)
+let _zipCache = null;
+
+async function buildZipCache() {
+  if (_zipCache) return _zipCache;
+  console.log('[ZIP] Building zip cache from psgc.cloud…');
+  _zipCache = { byCode: {}, byNameScoped: {}, byName: {} };
+
+  try {
+    const [cRes, mRes] = await Promise.all([
+      fetch('https://psgc.cloud/api/cities'),
+      fetch('https://psgc.cloud/api/municipalities'),
+    ]);
+    const cities = cRes.ok ? await cRes.json() : [];
+    const munis  = mRes.ok ? await mRes.json() : [];
+    let count = 0;
+
+    [...cities, ...munis].forEach(item => {
+      if (!item) return;
+      const zip     = item.zip_code ? String(item.zip_code) : '';
+      const nameKey = item.name ? item.name.toLowerCase().trim() : '';
+
+      if (item.code) {
+        // ── Code indexing (fix #1: padding variants) ──────────────────────
+        // Exact 10-digit code as returned by psgc.cloud
+        _zipCache.byCode[item.code] = zip;
+
+        // 9-digit variant: drop the last character if it is '0'
+        // This matches psgc.gitlab.io codes directly
+        if (item.code.length === 10 && item.code.endsWith('0')) {
+          _zipCache.byCode[item.code.slice(0, 9)] = zip;
+        }
+
+        // ── Province-scoped name indexing (fix #2: name collision) ────────
+        // First 4 digits of the PSGC code identify the province in both APIs
+        const prefix = item.code.substring(0, 4);
+        if (nameKey) {
+          if (!_zipCache.byNameScoped[prefix]) {
+            _zipCache.byNameScoped[prefix] = {};
+          }
+          _zipCache.byNameScoped[prefix][nameKey] = zip;
+        }
+      }
+
+      // Flat name fallback (used only when code-based province prefix
+      // lookup fails — e.g. NCR cities with no standard province digits)
+      if (nameKey) {
+        _zipCache.byName[nameKey] = zip;
+      }
+
+      if (zip) count++;
+    });
+
+    console.log('[ZIP] Cache ready —',
+      Object.keys(_zipCache.byCode).length,       'code keys,',
+      Object.keys(_zipCache.byNameScoped).length,  'province scopes,',
+      Object.keys(_zipCache.byName).length,        'flat name keys,',
+      count, 'have a zip value');
+
+  } catch (e) {
+    console.error('[ZIP] Cache build failed:', e);
+    _zipCache = { byCode: {}, byNameScoped: {}, byName: {} };
+  }
+  return _zipCache;
+}
+
+// ── ZIP lookup — 4 levels, most specific first ────────────────────────────
+// ── ZIP lookup — 5 levels, most specific first ────────────────────────────
+// Level 0: province override map (your verified data — always wins)
+// Level 1: exact PSGC code match
+// Level 2: padded code match (9-digit → 10-digit)
+// Level 3: province-scoped API name match (prevents cross-province collision)
+// Level 4: flat name fallback (last resort, NCR etc.)
+async function getZip(cityCode, cityName, provinceName) {
+  const cache   = await buildZipCache();
+  const nameKey = cityName     ? cityName.toLowerCase().trim()     : '';
+  const provKey = provinceName ? provinceName.toLowerCase().trim() : '';
+
+  // Level 0: verified province override map — checked before any API data
+  if (provKey && nameKey && PROVINCE_ZIP_OVERRIDES[provKey]) {
+    const override = PROVINCE_ZIP_OVERRIDES[provKey][nameKey];
+    if (override) {
+      console.log('[ZIP] L0 override [' + provKey + ']:', cityName, '→', override);
+      return override;
+    }
+  }
+
+  // Level 1: exact code match
+  if (cityCode && cache.byCode[cityCode]) {
+    console.log('[ZIP] L1 exact code:', cityCode, '→', cache.byCode[cityCode]);
+    return cache.byCode[cityCode];
+  }
+
+  // Level 2: padded code (9-digit gitlab → 10-digit cloud)
+  if (cityCode) {
+    const padded = cityCode + '0';
+    if (cache.byCode[padded]) {
+      console.log('[ZIP] L2 padded code:', padded, '→', cache.byCode[padded]);
+      return cache.byCode[padded];
+    }
+  }
+
+  // Level 3: province-scoped name lookup (prevents same-name collision)
+  if (cityCode && nameKey) {
+    const prefix = cityCode.substring(0, 4);
+    if (cache.byNameScoped[prefix] && cache.byNameScoped[prefix][nameKey]) {
+      console.log('[ZIP] L3 scoped name [' + prefix + ']:', cityName,
+                  '→', cache.byNameScoped[prefix][nameKey]);
+      return cache.byNameScoped[prefix][nameKey];
+    }
+  }
+
+  // Level 4: flat name fallback
+  if (nameKey && cache.byName[nameKey]) {
+    console.log('[ZIP] L4 flat name:', cityName, '→', cache.byName[nameKey]);
+    return cache.byName[nameKey];
+  }
+
+  console.warn('[ZIP] Not found — code:', cityCode, '| name:', cityName);
+  return '';
+}
+
+// ── Write zip, controlling readonly based on whether a zip was found ───────
+// ── Write zip — always editable so users can correct wrong values ──────────
+function setZip(zipEl, value, requestId) {
+  if (!zipEl) return;
+  if (requestId !== undefined && zipEl._zipReqId !== requestId) {
+    console.log('[ZIP] Stale result discarded (req', requestId,
+                '< current', zipEl._zipReqId, ')');
+    return;
+  }
+  // Always remove readonly — field must be editable in all cases
+  zipEl.removeAttribute('readonly');
+  zipEl.style.cursor = '';
+  zipEl.value        = value || '';
+
+  if (value) {
+    zipEl.title       = 'Auto-filled — edit if incorrect';
+    zipEl.placeholder = 'Auto-filled';
+    console.log('[ZIP] →', zipEl.id, '=', value, '(auto-filled, editable)');
+  } else {
+    zipEl.title       = 'ZIP code not found — enter manually';
+    zipEl.placeholder = 'Enter ZIP manually';
+    console.log('[ZIP] →', zipEl.id, '= (not found — editable)');
+  }
+}
+
+// ── Clear zip and make it editable (province change / reset) ──────────────
+function clearZip(zipEl) {
+  if (!zipEl) return;
+  zipEl.removeAttribute('readonly');
+  zipEl.value       = '';
+  zipEl.style.cursor = '';
+  zipEl.title       = '';
+  zipEl.placeholder = 'Auto-filled';
+}
+
+// ── Replace a text <input> with a <select> ────────────────────────────────
 function inputToSelect(inputEl) {
   if (!inputEl || inputEl.tagName === 'SELECT') return inputEl;
   const sel = document.createElement('select');
   sel.id        = inputEl.id;
   sel.name      = inputEl.name;
   sel.className = inputEl.className;
-  // Copy inline styles so dark-mode / field styling is preserved
   sel.style.cssText = inputEl.style.cssText;
   inputEl.replaceWith(sel);
   return sel;
 }
 
-// ── Populate a <select> from [{code, name}] ───────────────────────────────
+// ── Populate a <select> ───────────────────────────────────────────────────
 function fillSelect(selectEl, items, placeholder, savedName) {
   selectEl.innerHTML = '';
   const blank = document.createElement('option');
   blank.value       = '';
   blank.textContent = placeholder;
   selectEl.appendChild(blank);
-
   items.sort((a, b) => a.name.localeCompare(b.name));
-
   items.forEach(item => {
-    const o          = document.createElement('option');
-    o.value          = item.name;   // store the NAME, not the code
-    o.dataset.code   = item.code;   // keep code for cascading API calls
-    o.textContent    = item.name;
+    const o        = document.createElement('option');
+    o.value        = item.name;
+    o.dataset.code = item.code;
+    o.textContent  = item.name;
     if (savedName && item.name.toLowerCase() === savedName.toLowerCase()) {
       o.selected = true;
     }
@@ -659,15 +1029,15 @@ function fillSelect(selectEl, items, placeholder, savedName) {
   });
 }
 
-// ── Loading state helper ──────────────────────────────────────────────────
+// ── Loading spinner ───────────────────────────────────────────────────────
 function setLoading(selectEl, isLoading) {
   selectEl.disabled = isLoading;
   let spinner = selectEl.nextElementSibling;
   if (isLoading) {
     if (!spinner || !spinner.classList.contains('addr-spinner')) {
       spinner = document.createElement('small');
-      spinner.className  = 'addr-spinner';
-      spinner.style.cssText = 'margin-left:8px; opacity:0.55; font-size:0.78rem;';
+      spinner.className = 'addr-spinner';
+      spinner.style.cssText = 'margin-left:8px;opacity:0.55;font-size:0.78rem;';
       spinner.textContent = 'Loading…';
       selectEl.insertAdjacentElement('afterend', spinner);
     }
@@ -676,132 +1046,141 @@ function setLoading(selectEl, isLoading) {
   }
 }
 
-// ── Load all provinces (+ Metro Manila) into a select ────────────────────
+// ── Get PSGC code from selected option ───────────────────────────────────
+function selectedCode(selectEl) {
+  const opt = selectEl.options[selectEl.selectedIndex];
+  return opt ? (opt.dataset.code || '') : '';
+}
+
+// ── Load provinces ────────────────────────────────────────────────────────
 async function loadProvinces(selectEl, savedName) {
   setLoading(selectEl, true);
-  const data = await apiFetch(PSGC + '/provinces/');
+  const data  = await apiFetch(PSGC + '/provinces/');
   const items = data.map(p => ({ code: p.code, name: p.name }));
-  // NCR has no province row — add Metro Manila manually
   items.push({ code: 'NCR', name: 'Metro Manila' });
   fillSelect(selectEl, items, 'Select Province', savedName);
   setLoading(selectEl, false);
 }
 
-// ── Load cities/municipalities for the selected province ─────────────────
+// ── Load cities for a province ────────────────────────────────────────────
 async function loadCities(provinceCode, selectEl, savedName) {
   fillSelect(selectEl, [], 'Loading cities…', '');
   setLoading(selectEl, true);
-
   let data;
   if (provinceCode === 'NCR') {
     data = await apiFetch(PSGC + '/regions/130000000/cities-municipalities/');
   } else {
     data = await apiFetch(PSGC + '/provinces/' + provinceCode + '/cities-municipalities/');
   }
-
   const items = (data || []).map(c => ({ code: c.code, name: c.name }));
   fillSelect(selectEl, items, 'Select City / Municipality', savedName);
   setLoading(selectEl, false);
 }
 
-// ── Load barangays for the selected city, then fetch zip ─────────────────
-async function loadBarangays(cityCode, selectEl, zipEl, savedName) {
+// ── Load barangays for a city ─────────────────────────────────────────────
+async function loadBarangays(cityCode, selectEl, savedName) {
   fillSelect(selectEl, [], 'Loading barangays…', '');
   setLoading(selectEl, true);
-
   const data  = await apiFetch(PSGC + '/cities-municipalities/' + cityCode + '/barangays/');
   const items = (data || []).map(b => ({ code: b.code, name: b.name }));
   fillSelect(selectEl, items, 'Select Barangay', savedName);
   setLoading(selectEl, false);
-
-  // Zip code from city detail endpoint
-  if (zipEl) {
-    const detail = await apiFetch(PSGC + '/cities-municipalities/' + cityCode + '/');
-    zipEl.value = (detail && detail.zipCode) ? detail.zipCode : '';
-  }
 }
 
-// ── Get the PSGC code stored on the currently selected option ────────────
-function selectedCode(selectEl) {
-  const opt = selectEl.options[selectEl.selectedIndex];
-  return opt ? (opt.dataset.code || '') : '';
-}
-
-// ── Wire one complete address block ───────────────────────────────────────
+// ── Wire one full address block ───────────────────────────────────────────
 async function wireAddressBlock(
     provinceEl, cityEl, barangayEl, zipEl,
     savedProvince, savedCity, savedBarangay
 ) {
   if (!provinceEl || !cityEl || !barangayEl) return;
 
-  // ── 1. Load provinces, pre-selecting the saved value ─────────────────
+  if (zipEl) zipEl._zipReqId = 0;
+
   await loadProvinces(provinceEl, savedProvince);
 
-  // ── 2. If a province was saved, load its cities ───────────────────────
   if (savedProvince) {
     const provCode = selectedCode(provinceEl);
     if (provCode) {
       await loadCities(provCode, cityEl, savedCity);
 
-      // ── 3. If a city was saved, load its barangays + zip ─────────────
       if (savedCity) {
         const cityCode = selectedCode(cityEl);
+        const cityName = cityEl.value;
         if (cityCode) {
-          await loadBarangays(cityCode, barangayEl, zipEl, savedBarangay);
+          if (zipEl) zipEl._zipReqId = (zipEl._zipReqId || 0) + 1;
+          const reqId = zipEl ? zipEl._zipReqId : undefined;
+          const [zip] = await Promise.all([
+            getZip(cityCode, cityName, savedProvince),
+            loadBarangays(cityCode, barangayEl, savedBarangay),
+          ]);
+          setZip(zipEl, zip, reqId);
         }
       }
     }
   }
 
-  // ── Province change ───────────────────────────────────────────────────
+  // Province changed
   provinceEl.addEventListener('change', async function () {
     const code = selectedCode(this);
     fillSelect(cityEl,     [], 'Select City / Municipality', '');
     fillSelect(barangayEl, [], 'Select Barangay', '');
-    if (zipEl) zipEl.value = '';
+    clearZip(zipEl);
     if (!code) return;
     await loadCities(code, cityEl, '');
   });
 
-  // ── City change ───────────────────────────────────────────────────────
+  // City changed
   cityEl.addEventListener('change', async function () {
     const code = selectedCode(this);
+    const name = this.value;
     fillSelect(barangayEl, [], 'Select Barangay', '');
-    if (zipEl) zipEl.value = '';
+    clearZip(zipEl);
     if (!code) return;
-    await loadBarangays(code, barangayEl, zipEl, '');
+
+    if (zipEl) zipEl._zipReqId = (zipEl._zipReqId || 0) + 1;
+    const reqId = zipEl ? zipEl._zipReqId : undefined;
+
+    console.log('[ADDR] City selected → code:', code, '| name:', name, '| req:', reqId);
+
+    const provinceName = provinceEl.value;
+    const [zip] = await Promise.all([
+      getZip(code, name, provinceName),
+      loadBarangays(code, barangayEl, ''),
+    ]);
+    setZip(zipEl, zip, reqId);
   });
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function () {
 
-  // Read whatever text value Django rendered into the input
+  buildZipCache(); // pre-fetch in background
+
   function savedVal(id) {
     const el = document.getElementById(id);
     return el ? (el.value || '').trim() : '';
   }
 
-  // Capture saved values BEFORE replacing inputs with selects
-  const permProvince  = savedVal('id_perm-province');
-  const permCity      = savedVal('id_perm-city_municipality');
-  const permBarangay  = savedVal('id_perm-barangay');
-  const resProvince   = savedVal('id_res-province');
-  const resCity       = savedVal('id_res-city_municipality');
-  const resBarangay   = savedVal('id_res-barangay');
+  const permProvince = savedVal('id_perm-province');
+  const permCity     = savedVal('id_perm-city_municipality');
+  const permBarangay = savedVal('id_perm-barangay');
+  const resProvince  = savedVal('id_res-province');
+  const resCity      = savedVal('id_res-city_municipality');
+  const resBarangay  = savedVal('id_res-barangay');
 
-  // Replace text inputs → selects
-  const permProvinceEl  = inputToSelect(document.getElementById('id_perm-province'));
-  const permCityEl      = inputToSelect(document.getElementById('id_perm-city_municipality'));
-  const permBarangayEl  = inputToSelect(document.getElementById('id_perm-barangay'));
-  const permZipEl       = document.getElementById('id_perm-zip_code');
+  console.log('[ADDR] Saved perm:', permProvince, '/', permCity, '/', permBarangay);
+  console.log('[ADDR] Saved res: ', resProvince,  '/', resCity,  '/', resBarangay);
 
-  const resProvinceEl   = inputToSelect(document.getElementById('id_res-province'));
-  const resCityEl       = inputToSelect(document.getElementById('id_res-city_municipality'));
-  const resBarangayEl   = inputToSelect(document.getElementById('id_res-barangay'));
-  const resZipEl        = document.getElementById('id_res-zip_code');
+  const permProvinceEl = inputToSelect(document.getElementById('id_perm-province'));
+  const permCityEl     = inputToSelect(document.getElementById('id_perm-city_municipality'));
+  const permBarangayEl = inputToSelect(document.getElementById('id_perm-barangay'));
+  const permZipEl      = document.getElementById('id_perm-zip_code');
 
-  // Wire both blocks in parallel
+  const resProvinceEl  = inputToSelect(document.getElementById('id_res-province'));
+  const resCityEl      = inputToSelect(document.getElementById('id_res-city_municipality'));
+  const resBarangayEl  = inputToSelect(document.getElementById('id_res-barangay'));
+  const resZipEl       = document.getElementById('id_res-zip_code');
+
   await Promise.all([
     wireAddressBlock(permProvinceEl, permCityEl, permBarangayEl, permZipEl,
                      permProvince, permCity, permBarangay),
@@ -809,14 +1188,9 @@ document.addEventListener('DOMContentLoaded', async function () {
                      resProvince,  resCity,  resBarangay),
   ]);
 
-  // On submit: the select values are already plain text names (we store
-  // names in option.value, not codes) so nothing extra is needed.
-  // This listener is here only as a safety check.
   const form = document.getElementById('pds-form');
   if (form) {
     form.addEventListener('submit', function () {
-      // Zip code field is readonly in the UI but must be writable for
-      // Django to receive the value — remove readonly on submit
       [permZipEl, resZipEl].forEach(el => {
         if (el) el.removeAttribute('readonly');
       });
